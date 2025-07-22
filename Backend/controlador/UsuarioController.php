@@ -13,6 +13,9 @@ if (isset($_POST['accion'])) {
         case 'login':
             $controlador->handleLogin();
             break;
+        case 'logout':
+            $controlador->handleLogout();
+            break;
         // Aquí se pueden agregar más casos (registrar, actualizar, etc.)
         default:
             // Redirigir si la acción no es válida
@@ -56,7 +59,7 @@ class UsuarioController
 
             if ($login_exitoso) {
                 // Redirigir al panel principal si el login es correcto
-                header('Location: ../../dashboard.php');
+                header('Location: ../../Frontend/Vistas/dashboard.php');
                 exit();
             } else {
                 // Redirigir al index con un mensaje de error si falla
@@ -69,6 +72,16 @@ class UsuarioController
             header('Location: ../../index.php?error=1');
             exit();
         }
+    }
+    /* cerrar sesion */
+    public function handleLogout()
+    {
+        session_destroy();
+        // redirigir a la pagina de inicio con un mensaje de que se cerró la sesión exitosamente
+        session_start();
+        $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Ha cerrado sesión exitosamente.'];
+        header('Location: ../../index.php');
+        exit();
     }
 }
 ?>

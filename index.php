@@ -1,18 +1,49 @@
 <?php
-// Iniciar sesión para verificar si el usuario ya está autenticado
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
-// Si ya existe una sesión activa, redirigir al dashboard
+// Se inicia la sesión para poder acceder a las variables de sesión.
+session_start();
+
+// Si el usuario ya tiene una sesión activa, se le redirige directamente al dashboard.
 if (isset($_SESSION['id_usu'])) {
-    header('Location: dashboard.php');
-    exit();
+    header('Location: Frontend/Vistas/dashboard.php');
+    exit;
 }
 
-// Incluir el encabezado de la página
-require_once 'Frontend/Vistas/layouts/header.php';
+// Se revisa si el controlador (login.php) dejó un mensaje en la sesión.
+$mensaje_alerta = null; // Se inicializa la variable
+if (isset($_SESSION['mensaje'])) {
+    // Si hay un mensaje, se guarda en nuestra variable local.
+    $mensaje_alerta = $_SESSION['mensaje'];
+    // Inmediatamente después, se elimina de la sesión para que no se muestre de nuevo si se recarga la página.
+    unset($_SESSION['mensaje']);
+}
+
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Alcaldía</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="Frontend/estilos/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+        }
+    </style>
+</head>
+<body>
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -62,7 +93,15 @@ require_once 'Frontend/Vistas/layouts/header.php';
     </div>
 </div>
 
-<?php
-// Incluir el pie de página
-require_once 'Frontend/Vistas/layouts/footer.php';
-?>
+    <!-- Bootstrap 5 JS Bundle (incluye Popper) -->
+    <script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
