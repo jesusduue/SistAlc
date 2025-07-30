@@ -56,7 +56,7 @@ if (isset($_SESSION['mensaje'])) {
                 <div class="card-body p-4">
                     <div class="text-center mb-4">
                         <!-- Puedes colocar el logo de la alcaldía aquí -->
-                        <img src="Frontend/estilos/img/logo.png" alt="Logo Alcaldía" class="img-fluid" style="max-height: 100px;">
+                        <img src="Frontend/estilos/img/logo_alcaldia_la_fria.png" alt="Logo Alcaldía" class="img-fluid" style="max-height: 100px;">
                     </div>
 
                     <?php
@@ -68,22 +68,26 @@ if (isset($_SESSION['mensaje'])) {
                     }
                     ?>
 
-                    <form action="Backend/controlador/UsuarioController.php" method="POST">
+                    <form id="loginForm" action="Backend/controlador/UsuarioController.php" method="POST">
                         <!-- Campo oculto para indicar la acción a realizar -->
                         <input type="hidden" name="accion" value="login">
                         
                         <div class="mb-3">
                             <label for="nom_usu" class="form-label"><strong><i class="fas fa-user"></i> Usuario:</strong></label>
-                            <input type="text" class="form-control" id="nom_usu" name="nom_usu" placeholder="Ingrese su nombre de usuario" required>
+                            <input type="text" class="form-control" autocomplete="username" id="nom_usu" name="nom_usu" placeholder="Ingrese su nombre de usuario" required>
+                            <span></span>
                         </div>
                         <div class="mb-3">
                             <label for="cla_usu" class="form-label"><strong><i class="fas fa-lock"></i> Contraseña:</strong></label>
-                            <input type="password" class="form-control" id="cla_usu" name="cla_usu" placeholder="Ingrese su contraseña" required>
+                            <input type="password" autocomplete="current-password" class="form-control" id="cla_usu" name="cla_usu" placeholder="Ingrese su contraseña" required>
+                            <span></span>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i> Ingresar</button>
                         </div>
                     </form>
+                    <button class="btn btn-danger" onclick="Swal.fire('¡Hola!', 'Bienvenido al sistema', 'success')">Mostrar alerta</button>
+
                 </div>
                 <div class="card-footer text-center text-muted">
                     <small>&copy; <?php echo date('Y'); ?> - Alcaldía del Municipio G. de Hevia</small>
@@ -94,7 +98,9 @@ if (isset($_SESSION['mensaje'])) {
 </div>
 
     <!-- Bootstrap 5 JS Bundle (incluye Popper) -->
-    <script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+    <script src="Frontend/estilos/js/bootstrap.bundle.min.js"></script>
+    <script src="Frontend/Vistas/js/validarInicioSesion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
 

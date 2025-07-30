@@ -24,9 +24,9 @@ class Usuario extends Utilidad
     public function login($nombreUsuario, $clave)
     {
         // Consulta SQL con marcadores de posición (?) para seguridad
-        $this->que_bd = "SELECT u.*, r.nom_rol 
+        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.cla_usu, u.fky_rol, u.est_usu, r.nom_rol 
                          FROM usuario u
-                         JOIN rol r ON u.fky_rol = r.id_rol
+                         INNER JOIN rol r ON u.fky_rol = r.id_rol
                          WHERE u.nom_usu = ? AND u.est_usu = 'A'";
 
         // Preparar la sentencia
@@ -58,7 +58,7 @@ class Usuario extends Utilidad
                 $_SESSION['nom_usu'] = $datos_usuario['nom_usu'];
                 $_SESSION['fky_rol'] = $datos_usuario['fky_rol'];
                 $_SESSION['nom_rol'] = $datos_usuario['nom_rol']; // Guardamos también el nombre del rol
-                
+
                 $stmt->close();
                 return true; // Login exitoso
             }
@@ -68,5 +68,70 @@ class Usuario extends Utilidad
         $stmt->close();
         return false;
     }
+
+    /**
+     * Maneja las peticiones HTTP relacionadas con los usuarios.
+     * Maneja la lógica del inicio de sesión.
+     */
+    public function iniciarSesion()
+    {
+        // Validar que los campos no estén vacíos
+        if (!empty($_POST['nom_usu']) && !empty($_POST['cla_usu'])) {
+
+            $nombreUsuario = $_POST['nom_usu'];
+            $clave = $_POST['cla_usu'];
+
+            // Intentar iniciar sesión
+            // Llamar al método login de la clase Usuario
+            $login_exitoso = $this->login($nombreUsuario, $clave);
+            // Si el login es exitoso, redirigir al dashboard
+
+            if ($login_exitoso) {
+                // Redirigir al panel principal si el login es correcto
+                header('Location: ../../Frontend/Vistas/dashboard.php');
+                exit();
+            } else {
+                // Redirigir al index con un mensaje de error si falla
+                header('Location: ../../index.php?error=1');
+                exit();
+            }
+        } else {
+            // Redirigir si los datos están incompletos
+            header('Location: ../../index.php?error=1');
+            exit();
+        }
+    }
+    /* cerrar sesion */
+    public function cerrarSesion()
+    {
+        session_start();
+        // Elimina todas las variables de sesión.
+        $_SESSION = array();
+
+        // Si se desea eliminar completamente la sesión, también se debe borrar la cookie de sesión.
+        // Nota: Esto destruirá la sesión, no solo los datos almacenados en ella.
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Finalmente, destruye la sesión.
+        session_destroy();
+
+        // Redirige a la página de inicio de sesión con un mensaje
+        session_start(); // Inicia una nueva sesión solo para pasar un mensaje
+        $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Ha cerrado sesión exitosamente.'];
+        header('Location: ../../index.php');
+        exit;
+    }
 }
+//fin archivo php
 ?>

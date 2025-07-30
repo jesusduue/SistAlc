@@ -12,10 +12,12 @@ include 'layouts/header.php';
 </div>  
 
 <!-- Boton para cerrar sesion    -->
-<a href="../../Backend/controlador/UsuarioController.php?accion=logout" class="btn btn-danger">Cerrar sesión</a>
-
-
-
+ <!-- se hace de esta manera ya que el controlador esta recibiendo el valor 
+    unicamente por metodo post -->
+<form action="../../Backend/controlador/UsuarioController.php" method="POST">
+    <input type="hidden" name="accion" value="logout">
+    <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+</form>
 
 <?php
 include 'layouts/footer.php';
