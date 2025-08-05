@@ -22,7 +22,7 @@ $nombre_rol = $_SESSION['nom_rol']; //nombre del rol del usuario
     <title>Sistema de Alcaldía</title>
     
     <!-- Bootstrap 5 CSS -->
-    <link href="../estilos/css/bootstrap.min.css" rel="stylesheet"><!-- para que cargue los estilos en dashboard.php -->
+    <link href="../../estilos/css/bootstrap.min.css" rel="stylesheet"><!-- para que cargue los estilos en dashboard.php -->
     
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">

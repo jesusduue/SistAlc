@@ -92,12 +92,14 @@ class Usuario extends Utilidad
                 exit();
             } else {
                 // Redirigir al index con un mensaje de error si falla
-                header('Location: ../../index.php?error=1');
+                $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Usuario o contraseña incorrectos, o el usuario está inactivo.'];
+                header('Location: ../../index.php');
                 exit();
             }
         } else {
             // Redirigir si los datos están incompletos
-            header('Location: ../../index.php?error=1');
+            $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Usuario o contraseña incorrectos, o el usuario está inactivo.'];
+            header('Location: ../../index.php');
             exit();
         }
     }
@@ -132,6 +134,56 @@ class Usuario extends Utilidad
         header('Location: ../../index.php');
         exit;
     }
-}
-//fin archivo php
-?>
+
+    public function consultar_todos_con_rol()
+    {
+        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.fky_rol, u.est_usu, r.nom_rol,
+                     CASE u.est_usu WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
+                     FROM usuario u
+                     INNER JOIN rol r ON u.fky_rol = r.id_rol
+                     ORDER BY u.id_usu DESC";
+
+        $resultado = $this->con_bd->query($this->que_bd);
+        return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    public function consultar_por_id($id)
+    {
+        $stmt = $this->con_bd->prepare("SELECT * FROM usuario WHERE id_usu = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        return $resultado->fetch_assoc();
+    }
+
+    public function registrar($datos)
+    {
+        $this->que_bd = "INSERT INTO usuario (nom_usu, cla_usu, fky_rol, est_usu) VALUES (?, ?, ?, ?)";
+        $stmt = $this->con_bd->prepare($this->que_bd);
+        $clave_hasheada = password_hash($datos['cla_usu'], PASSWORD_DEFAULT);
+        $stmt->bind_param("ssis", $datos['nom_usu'], $clave_hasheada, $datos['fky_rol'], $datos['est_usu']);
+        return $stmt->execute();
+    }
+
+    public function modificar($datos)
+    {
+        if (!empty($datos['cla_usu'])) {
+            $this->que_bd = "UPDATE usuario SET nom_usu = ?, cla_usu = ?, fky_rol = ?, est_usu = ? WHERE id_usu = ?";
+            $clave_hasheada = password_hash($datos['cla_usu'], PASSWORD_DEFAULT);
+            $stmt = $this->con_bd->prepare($this->que_bd);
+            $stmt->bind_param("ssisi", $datos['nom_usu'], $clave_hasheada, $datos['fky_rol'], $datos['est_usu'], $datos['id_usu']);
+        } else {
+            $this->que_bd = "UPDATE usuario SET nom_usu = ?, fky_rol = ?, est_usu = ? WHERE id_usu = ?";
+            $stmt = $this->con_bd->prepare($this->que_bd);
+            $stmt->bind_param("sisi", $datos['nom_usu'], $datos['fky_rol'], $datos['est_usu'], $datos['id_usu']);
+        }
+        return $stmt->execute();
+    }
+
+    public function cambiar_estado($id, $nuevo_estado)
+    {
+        $stmt = $this->con_bd->prepare("UPDATE usuario SET est_usu = ? WHERE id_usu = ?");
+        $stmt->bind_param("si", $nuevo_estado, $id);
+        return $stmt->execute();
+    }
+}//fin archivo php
