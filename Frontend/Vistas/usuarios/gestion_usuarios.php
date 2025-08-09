@@ -52,6 +52,8 @@ $roles = $rol->consultar_activos();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+
+
 <?php include '../layouts/sidebar.php'; ?>
 <div class="container py-4" style="margin-left: 250px; padding-top: 2rem;">
 <h2>Gestión de Usuarios</h2>

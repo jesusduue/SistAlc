@@ -11,6 +11,7 @@ $nombre_usuario = $_SESSION['nom_usu'];
 $nombre_rol = $_SESSION['nom_rol'];
 ?>
 
+
 <?php include 'layouts/sidebar.php'; ?>
 
 <link rel="stylesheet" href="../estilos/css/bootstrap.min.css">
@@ -27,7 +28,7 @@ $nombre_rol = $_SESSION['nom_rol'];
                     <i class="fas fa-users fa-3x mb-3 text-primary"></i>
                     <h5 class="card-title">Usuarios</h5>
                     <p class="card-text">Gestión de cuentas y roles de acceso.</p>
-                    <a href="usuarios/gestion_usuarios.php" class="btn btn-outline-primary">Administrar</a>
+                    <a href="../Vistas/usuarios/gestion_usuarios.php" class="btn btn-outline-primary">Administrar</a>
                 </div>
             </div>
         </div>
@@ -39,7 +40,7 @@ $nombre_rol = $_SESSION['nom_rol'];
                     <i class="fas fa-id-card fa-3x mb-3 text-success"></i>
                     <h5 class="card-title">Contribuyentes</h5>
                     <p class="card-text">Registro y control de contribuyentes.</p>
-                    <a href="contribuyentes/gestion_contribuyentes.php" class="btn btn-outline-success">Administrar</a>
+                    <a href="../Vistas/contribuyentes/gestion_contribuyentes.php" class="btn btn-outline-success">Administrar</a>
                 </div>
             </div>
         </div>
