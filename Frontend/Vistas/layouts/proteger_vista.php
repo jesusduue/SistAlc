@@ -14,7 +14,7 @@ $nombre_usuario = $_SESSION['nom_usu'];
 $nombre_rol = $_SESSION['nom_rol'];
 
 function restringirAcceso($rolRequerido) {
-    global $nombre_rol;
+    global $nombre_rol; // Obtener el rol del usuario desde la variable global
     if ($nombre_rol !== $rolRequerido) {
         echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
         echo '<script>
@@ -22,7 +22,7 @@ function restringirAcceso($rolRequerido) {
                 Swal.fire({
                     icon: "error",
                     title: "Acceso denegado",
-                    text: "No tienes permisos para acceder a esta vista.",
+                    text: "No tienes permisos para acceder a este Modulo.",
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     confirmButtonText: "Volver al inicio"

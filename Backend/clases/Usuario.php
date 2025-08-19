@@ -186,4 +186,12 @@ class Usuario extends Utilidad
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
+
+    //funcion para eliminar un usuario
+    public function eliminar($id)
+    {
+        $stmt = $this->con_bd->prepare("DELETE FROM usuario WHERE id_usu = ?");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
 }//fin archivo php

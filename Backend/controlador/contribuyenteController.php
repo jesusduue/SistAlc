@@ -5,10 +5,12 @@
 
 session_start();
 require_once '../clases/Contribuyente.php';
+require_once '../clases/auditoria.php';
 
 // Validar que llegue una acción por POST
 if (isset($_REQUEST['accion'])) {
     $contribuyente = new Contribuyente();
+    $auditoria = new Auditoria();
 
     switch ($_POST['accion']) {
 
@@ -29,6 +31,18 @@ if (isset($_REQUEST['accion'])) {
             } else {
                 $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Ocurrió un error al registrar.'];
             }
+            
+            // Registrar actividad de auditoría
+            $auditoria->registrarActividad(
+                $_SESSION['id_usu'],
+                $_SESSION['nom_usu'],
+                'Contribuyentes',
+                'Registrar',
+                'Nuevo contribuyente: ' . $_POST['nom_con'],
+                'contribuyente',
+                $nuevoId ?? null, // si tienes el ID recién creado
+                ['rif' => $_POST['rif_con']] // metadata opcional
+            );
             header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
 
@@ -47,6 +61,21 @@ if (isset($_REQUEST['accion'])) {
             } else {
                 $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo modificar el contribuyente.'];
             }
+            
+
+            // Registrar actividad de auditoría
+            $auditoria->registrarActividad(
+                $_SESSION['id_usu'],
+                $_SESSION['nom_usu'],
+                'Contribuyentes',
+                'Modificacion',
+                'Edición de contribuyente ID ' . $_POST['id_con'],
+                'contribuyente',
+                (int)$_POST['id_con']
+                // puedes añadir ['antes'=>..., 'despues'=>...] si capturas cambios
+
+            );
+
             header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
 
@@ -60,14 +89,25 @@ if (isset($_REQUEST['accion'])) {
                 $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo cambiar el estado.'];
             }
             header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
-            break;
+            // Registrar actividad de auditoría
+            $auditoria->registrarActividad(
+                $_SESSION['id_usu'],
+                $_SESSION['nom_usu'],
+                'Contribuyentes',
+                ($_POST['nuevo_estado'] === 'A') ? 'Activación' : 'Inactivación',
+                'Cambio de estado contribuyente ID ' . $_POST['id_con'],
+                'contribuyente',
+                (int)$_POST['id_con'],
+                ['nuevo_estado' => $_POST['nuevo_estado']]
+            );
 
+            break;
         default:
             header('Location: ../../index.php');
+            
             break;
     }
 } else {
     header('Location: ../../index.php');
     exit();
 }
-?>

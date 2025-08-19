@@ -29,7 +29,7 @@
     </ul>
     <hr>
    <!--  <form action="../../Backend/controlador/UsuarioController.php" method="POST"> -->
-     <form action="../../../Backend/controlador/UsuarioController.php" method="POST">
+     <form action="../../Backend/controlador/UsuarioController.php" method="POST">
         <input type="hidden" name="accion" value="logout">
         <button class="btn btn-outline-danger w-100">
             <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesión

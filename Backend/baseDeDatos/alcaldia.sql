@@ -195,3 +195,32 @@ CREATE TABLE IF NOT EXISTS solvencia_comercial(
 
 
 /* ////////////////////////////////////////////////////////////// */
+
+/* ////////////////////////////////////////////////////////////// */
+/* TABLA PARA GESTIONAR LA ACTIVIDAD DE LOS USUARIOS  */
+
+/* Tabla de bitácora de actividades de los usuarios */
+CREATE TABLE IF NOT EXISTS log_actividad (
+  id_log        INT PRIMARY KEY NOT NULL AUTO_INCREMENT,       -- ID único
+  fec_log       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,   -- Fecha/hora de la acción
+  fky_usu       INT NOT NULL,                                  -- Usuario que realizó la acción
+  nom_usu       VARCHAR(50) NOT NULL,                          -- Cache del nombre de usuario (por si cambia/luego)
+  modulo        ENUM('Usuarios','Roles','Contribuyentes','Facturación','Tipos de Impuestos',
+                     'Cédulas Catastrales','Patentes','Licencias','Solvencias Municipales',
+                     'Solvencias Comerciales','Sistema')
+                NOT NULL, --
+  accion        ENUM('Creación','Actualización','Eliminación','Activación','Inactivación',
+                     'Anulación','Login','Logout','Pago','Vencimiento')
+                NOT NULL,
+  detalle       VARCHAR(255) NOT NULL,                         -- Descripción corta visible en el dashboard
+  entidad_tipo  VARCHAR(50)  NULL,                             -- Ej: 'factura','contribuyente','patente'
+  entidad_id    INT          NULL,                             -- ID de la entidad afectada
+  -- Si tu MySQL >= 5.7, usa JSON; si no, cambia a TEXT
+  metadata      JSON         NULL,                             -- Datos extra (antes/después, payload, etc.)
+  ip            VARCHAR(45)  NULL,                             -- IPv4/IPv6
+  user_agent    VARCHAR(255) NULL,                             -- Navegador/cliente
+  est_log       CHAR(1)      NOT NULL DEFAULT 'A',             -- Estado del registro (A/I)
+CONSTRAINT fk_log_actividad_usuario
+    FOREIGN KEY (fky_usu) REFERENCES usuario(id_usu)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

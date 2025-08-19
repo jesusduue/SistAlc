@@ -24,7 +24,6 @@ $contribuyentes = $contribuyente->consultar_activos();
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarContribuyente">
         <i class="fas fa-user-plus"></i> Agregar Contribuyente
     </button>
-
     <!-- Modal para registrar nuevo contribuyente -->
     <?php include 'modalRegistrarContribuyente.php'; ?>
 
