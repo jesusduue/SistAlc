@@ -1,4 +1,7 @@
 <?php
+
+
+ // Backend/controlador/ContribuyenteController.php
 // ======================================
 // Controlador para gestionar contribuyentes
 // ======================================
@@ -8,11 +11,11 @@ require_once '../clases/Contribuyente.php';
 require_once '../clases/auditoria.php';
 
 // Validar que llegue una acción por POST
-if (isset($_REQUEST['accion'])) {
+if ($accion = isset($_REQUEST['accion'])) {
     $contribuyente = new Contribuyente();
     $auditoria = new Auditoria();
 
-    switch ($_POST['accion']) {
+    switch ($accion) {
 
         case 'registrar':
             $datos = [
@@ -31,7 +34,7 @@ if (isset($_REQUEST['accion'])) {
             } else {
                 $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Ocurrió un error al registrar.'];
             }
-            
+
             // Registrar actividad de auditoría
             $auditoria->registrarActividad(
                 $_SESSION['id_usu'],
@@ -61,14 +64,13 @@ if (isset($_REQUEST['accion'])) {
             } else {
                 $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo modificar el contribuyente.'];
             }
-            
 
             // Registrar actividad de auditoría
             $auditoria->registrarActividad(
                 $_SESSION['id_usu'],
                 $_SESSION['nom_usu'],
                 'Contribuyentes',
-                'Modificacion',
+                'modificacion',
                 'Edición de contribuyente ID ' . $_POST['id_con'],
                 'contribuyente',
                 (int)$_POST['id_con']
@@ -79,7 +81,10 @@ if (isset($_REQUEST['accion'])) {
             header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
 
-        case 'cambiar_estado':
+  
+           //  USAREMOS ESTE METODO PARA HACER BORRADO LOGICO DE REGISTROS EN LA TABLA
+           // CON EL CAMBIO DE ESTADO 
+      case 'cambiar_estado':
             $id = $_POST['id_con'];
             $nuevo_estado = $_POST['nuevo_estado'];
 
@@ -88,7 +93,6 @@ if (isset($_REQUEST['accion'])) {
             } else {
                 $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo cambiar el estado.'];
             }
-            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             // Registrar actividad de auditoría
             $auditoria->registrarActividad(
                 $_SESSION['id_usu'],
@@ -101,13 +105,38 @@ if (isset($_REQUEST['accion'])) {
                 ['nuevo_estado' => $_POST['nuevo_estado']]
             );
 
+            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
+            break; 
+
+        case 'eliminar':
+            $id = $_POST['id_con'];
+
+            if ($contribuyente->eliminar($id)) {
+                $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Contribuyente eliminado.'];
+            } else {
+                $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo eliminar el contribuyente.'];
+            }
+            // Registrar actividad de auditoría
+            $auditoria->registrarActividad(
+                $_SESSION['id_usu'],
+                $_SESSION['nom_usu'],
+                'Contribuyentes',
+                'Eliminación',
+                'Eliminación de contribuyente ID ' . $_POST['id_con'],
+                'contribuyente',
+                (int)$_POST['id_con']
+            );
+
+            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
+
         default:
             header('Location: ../../index.php');
-            
+
             break;
     }
 } else {
     header('Location: ../../index.php');
     exit();
-}
+} 
+?>

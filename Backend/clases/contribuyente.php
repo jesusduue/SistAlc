@@ -18,9 +18,13 @@ class Contribuyente extends Utilidad
      */
     public function consultar_activos()
     {
-        $this->que_bd = "SELECT * FROM contribuyente WHERE est_con = 'A' ORDER BY nom_con ASC";
-        $resultado = $this->con_bd->query($this->que_bd);
-        return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
+        $sql = "SELECT c.*,
+                       CASE c.est_con WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
+                  FROM contribuyente c
+                 WHERE c.est_con = 'A'
+                 ORDER BY c.id_con ASC";
+        $res = $this->con_bd->query($sql);
+        return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
     }
 
     /**
@@ -41,7 +45,12 @@ class Contribuyente extends Utilidad
             $datos['dir_con'],
             $datos['fky_usu']
         );
-        return $stmt->execute();
+       $ok = $stmt->execute();
+       if ($ok) {
+           $this->id_con = $stmt->insert_id; // ID del nuevo contribuyente para auditoria
+       }
+       $stmt->close();
+       return $ok;
     }
 
     /**
@@ -92,7 +101,7 @@ class Contribuyente extends Utilidad
      */
     public function consultar_todos()
     {
-        $this->que_bd = "SELECT * FROM contribuyente ORDER BY nom_con ASC";
+        $this->que_bd = "SELECT * FROM contribuyente WHERE est_con = 'A' ORDER BY nom_con ASC";
         $resultado = $this->con_bd->query($this->que_bd);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
@@ -107,6 +116,36 @@ class Contribuyente extends Utilidad
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows > 0;
+    }
+
+    /* elimina de forma logica un contribuyente */
+    public function eliminar($id)
+    {
+        /* return $this->cambiar_estado($id, 'I'); */
+        $stmt = $this->con_bd->prepare("DELETE FROM contribuyente WHERE id_con = ?");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+
+    }
+
+    /* buscar por nombre,rif,email o telefono (para buscador en tiempo real)
+     */
+    public function buscar($termino)
+    {
+        $this->que_bd = "SELECT * FROM contribuyente 
+                         WHERE (nom_con LIKE ? OR 
+                                rif_con LIKE ? OR 
+                                ema_con LIKE ? OR 
+                                tel_con LIKE ? OR
+                                dir_con LIKE ?) 
+                         AND est_con = 'A' 
+                         ORDER BY nom_con ASC";
+        $stmt = $this->con_bd->prepare($this->que_bd);
+        $like_termino = '%' . $termino . '%';
+        $stmt->bind_param("sssss", $like_termino, $like_termino, $like_termino, $like_termino, $like_termino);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 }
 ?>

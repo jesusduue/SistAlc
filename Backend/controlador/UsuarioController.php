@@ -15,13 +15,6 @@ if (isset($_REQUEST['accion'])) {
     switch ($accion) {
         case 'login':
             $controlador->iniciarSesion();
-            $auditoria->registrarActividad(
-                $_SESSION['id_usu'],
-                $_SESSION['nom_usu'],
-                'Sistema',
-                'Login',
-                'Inicio de sesión exitoso'
-            );
             break;
 
         case 'logout':
@@ -40,6 +33,7 @@ if (isset($_REQUEST['accion'])) {
         case 'registrar':
             $controlador->registrar($_POST);
             $_SESSION['mensaje'] = ['tipo' => 'success', 'texto' => 'Usuario registrado correctamente'];
+            
             $auditoria->registrarActividad(
                 $_SESSION['id_usu'] ?? 0,
                 $_SESSION['nom_usu'] ?? 'desconocido',

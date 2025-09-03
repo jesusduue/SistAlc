@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const btnSubmitText = document.querySelector('#btnSubmit span');
         const btnSubmitIcon = document.querySelector('#btnSubmit i');
 
+        //validar que recibe el id_con para modificar
         if (id) {
             // --- MODO EDICIÓN ---
             modalTitle.textContent = 'Editar Usuario';

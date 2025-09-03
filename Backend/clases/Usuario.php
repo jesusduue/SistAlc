@@ -1,6 +1,6 @@
 <?php
 require_once 'Utilidad.php';
-
+require_once 'auditoria.php';
 /**
  * Clase Usuario
  * Modela la tabla 'usuario' de la base de datos y gestiona sus operaciones.
@@ -51,7 +51,6 @@ class Usuario extends Utilidad
             $datos_usuario = $resultado->fetch_assoc();
 
             // Verificar la contraseña usando password_verify()
-            // Esto asume que la contraseña en la BD está hasheada con password_hash()
             if (password_verify($clave, $datos_usuario['cla_usu'])) {
                 // La contraseña es correcta. Crear la sesión.
                 $_SESSION['id_usu'] = $datos_usuario['id_usu'];
@@ -87,6 +86,15 @@ class Usuario extends Utilidad
             // Si el login es exitoso, redirigir al dashboard
 
             if ($login_exitoso) {
+                // Registrar la actividad de login
+                $auditoria = new Auditoria();
+                $auditoria->registrarActividad(
+                    $_SESSION['id_usu'] ?? 0,
+                    $_SESSION['nom_usu'] ?? 'desconocido',
+                    'Sistema',
+                    'Login',
+                    'Inicio de sesión exitoso'
+                );
                 // Redirigir al panel principal si el login es correcto
                 header('Location: ../../Frontend/Vistas/dashboard.php');
                 exit();

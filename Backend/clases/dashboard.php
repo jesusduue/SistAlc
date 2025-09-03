@@ -61,7 +61,7 @@ class Dashboard extends Utilidad
         $a = mb_strtolower($accion, 'UTF-8');
 
         return match ($a) {
-            'registrar', 'registrar', 'activación', 'activacion', 'pago' => 'success',
+            'registrar', 'activación', 'activacion', 'pago' => 'success',
             'modificar', 'modificacion', 'login', 'logout'         => 'primary',
             'eliminación', 'eliminacion', 'anulación', 'anulacion'      => 'danger',
             'inactivación', 'cambio de estado', 'vencimiento'               => 'secondary',

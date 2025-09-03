@@ -12,11 +12,11 @@
 
                     <div class="mb-3">
                         <label for="nom_usu" class="form-label">Usuario *</label>
-                        <input type="text" name="nom_usu" id="nom_usu" class="form-control" required>
+                        <input type="text" autocomplete="username" name="nom_usu" id="nom_usu" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="cla_usu" class="form-label" id="labelPassword">Contraseña *</label>
-                        <input type="password" name="cla_usu" id="cla_usu" class="form-control">
+                        <input type="password" autocomplete="current-password" name="cla_usu" id="cla_usu" class="form-control">
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
