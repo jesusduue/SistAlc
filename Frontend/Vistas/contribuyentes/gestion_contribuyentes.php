@@ -6,10 +6,10 @@ restringirAcceso('Administrador');
 
 require_once '../../../Backend/clases/Contribuyente.php';
 $contribuyente = new Contribuyente();
-$contribuyentes = $contribuyente->consultar_activos();
+$contribuyentes = $contribuyente->consultar_activos(); // se puede camnbiar a consultar todos para ver los contribuyentes inactivos
 ?>
 <link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
-<!-- ✅ CSS de DataTables (Bootstrap 5) -->
+<!-- CSS de DataTables (Bootstrap 5) -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
 
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
@@ -43,12 +43,15 @@ $contribuyentes = $contribuyente->consultar_activos();
 <script src="../../estilos/js/bootstrap.bundle.min.js"></script>    
 <script src="../../estilos/js/bootstrap.min.js"></script>
 <script src="../js/contribuyentes/modalContribuyente.js"></script>
+<script src="../js/contribuyentes/alertContribuyente.js"></script>
 <!-- JS DataTables + Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    // ✅ Inicializa DataTable y conecta el input al buscador nativo de DataTables
+    //Inicializa DataTable y conecta el input al buscador nativo de DataTables
      $(function() {
         const table = $('#tablaContribuyentes').DataTable({
             paging: true,

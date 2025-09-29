@@ -12,10 +12,10 @@
                     <input type="hidden" name="accion" id="formAccion" value="">
                     <input type="hidden" name="id_con" id="formIdContribuyente" value="">
 
-                    <div class="mb-3">
+<!--                     <div class="mb-3">
                           <label for="id_con" class="form-label">ID Contribuyente *</label>
                           <input type="text" name="id_con" id="id_con" class="form-control" readonly>
-                    </div>    
+                    </div>  -->   
                     <div class="mb-3">
                         <label for="nom_con" class="form-label">Nombre o Comercio *</label>
                         <input type="text" name="nom_con" id="nom_con" class="form-control" required>

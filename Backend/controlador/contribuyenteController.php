@@ -1,7 +1,7 @@
 <?php
 
 
- // Backend/controlador/ContribuyenteController.php
+// Backend/controlador/ContribuyenteController.php
 // ======================================
 // Controlador para gestionar contribuyentes
 // ======================================
@@ -11,7 +11,8 @@ require_once '../clases/Contribuyente.php';
 require_once '../clases/auditoria.php';
 
 // Validar que llegue una acción por POST
-if ($accion = isset($_REQUEST['accion'])) {
+if (isset($_REQUEST['accion'])) {
+    $accion = $_REQUEST['accion'];
     $contribuyente = new Contribuyente();
     $auditoria = new Auditoria();
 
@@ -46,7 +47,6 @@ if ($accion = isset($_REQUEST['accion'])) {
                 $nuevoId ?? null, // si tienes el ID recién creado
                 ['rif' => $_POST['rif_con']] // metadata opcional
             );
-            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
 
         case 'modificar':
@@ -77,39 +77,44 @@ if ($accion = isset($_REQUEST['accion'])) {
                 // puedes añadir ['antes'=>..., 'despues'=>...] si capturas cambios
 
             );
-
-            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
 
-  
-           //  USAREMOS ESTE METODO PARA HACER BORRADO LOGICO DE REGISTROS EN LA TABLA
-           // CON EL CAMBIO DE ESTADO 
-      case 'cambiar_estado':
-            $id = $_POST['id_con'];
-            $nuevo_estado = $_POST['nuevo_estado'];
 
-            if ($contribuyente->cambiar_estado($id, $nuevo_estado)) {
-                $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Estado del contribuyente actualizado.'];
-            } else {
-                $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo cambiar el estado.'];
+        //  USAREMOS ESTE METODO PARA HACER BORRADO LOGICO DE REGISTROS EN LA TABLA
+        // CON EL CAMBIO DE ESTADO 
+        case 'cambiar_estado':
+
+            if (isset($_GET['id'], $_GET['nuevo_estado'])) {
+                $ok = $contribuyente->cambiar_estado((int)$_GET['id'], $_GET['nuevo_estado']);
+                if ($ok) {
+                    $_SESSION['mensaje'] = [
+                        'tipo'  => 'success', // success | info | warning | error
+                        'titulo' => 'Estado actualizado',
+                        'texto' => 'El estado del Contribuyente se cambió correctamente.'
+                    ];
+                    // Registrar actividad de auditoría
+                    $auditoria->registrarActividad(
+                        $_SESSION['id_usu'],
+                        $_SESSION['nom_usu'],
+                        'Contribuyentes',
+                        /* ($_GET['nuevo_estado'] === 'A') ? 'Activo' : 'Inactivo' */ 'Cambio de Estado',
+                        'Cambio de estado contribuyente ID ' . $_GET['id'],
+                        'contribuyente',
+                        (int)$_GET['id'],
+                        ['nuevo_estado' => $_GET['nuevo_estado']]
+                    );
+                }else{
+                         $_SESSION['mensaje'] = [
+                        'tipo'  => 'error',
+                        'titulo' => 'No se pudo actualizar',
+                        'texto' => 'Ocurrió un problema al cambiar el estado.'
+                    ];
+                }
             }
-            // Registrar actividad de auditoría
-            $auditoria->registrarActividad(
-                $_SESSION['id_usu'],
-                $_SESSION['nom_usu'],
-                'Contribuyentes',
-                ($_POST['nuevo_estado'] === 'A') ? 'Activación' : 'Inactivación',
-                'Cambio de estado contribuyente ID ' . $_POST['id_con'],
-                'contribuyente',
-                (int)$_POST['id_con'],
-                ['nuevo_estado' => $_POST['nuevo_estado']]
-            );
-
-            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
-            break; 
+            break;
 
         case 'eliminar':
-            $id = $_POST['id_con'];
+            $id = $_GET['id'];
 
             if ($contribuyente->eliminar($id)) {
                 $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Contribuyente eliminado.'];
@@ -122,21 +127,22 @@ if ($accion = isset($_REQUEST['accion'])) {
                 $_SESSION['nom_usu'],
                 'Contribuyentes',
                 'Eliminación',
-                'Eliminación de contribuyente ID ' . $_POST['id_con'],
+                'Eliminación de contribuyente ID ' . $_GET['id'],
                 'contribuyente',
-                (int)$_POST['id_con']
+                (int)$_GET['id']
             );
-
-            header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
             break;
 
         default:
             header('Location: ../../index.php');
-
-            break;
+            exit();
+    }
+    //redirige al modulo de gestion de contribuyentes
+    if (!in_array($accion, ['login', 'logout'])) {
+        header('Location: ../../Frontend/Vistas/contribuyentes/gestion_contribuyentes.php');
+        exit();
     }
 } else {
     header('Location: ../../index.php');
     exit();
-} 
-?>
+}

@@ -24,13 +24,18 @@
                             </td>
                             <td>
                                 <!-- botón para editar usuario -->
-                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#usuarioModal"
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-warning" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#usuarioModal"
                                     data-id="<?php echo $usu['id_usu']; ?>"
                                     data-nombre="<?php echo htmlspecialchars($usu['nom_usu']); ?>"
                                     data-rol="<?php echo $usu['fky_rol']; ?>"
                                     data-estado="<?php echo $usu['est_usu']; ?>">
                                     <i class="fas fa-edit"></i>
                                 </button>
+                                
                                 <?php if ($usu['id_usu'] != $_SESSION['id_usu']): ?>
                                     <!-- botón para cambiar estado -->
                                     <a href="javascript:void(0);"

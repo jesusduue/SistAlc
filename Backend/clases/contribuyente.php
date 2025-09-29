@@ -101,7 +101,7 @@ class Contribuyente extends Utilidad
      */
     public function consultar_todos()
     {
-        $this->que_bd = "SELECT * FROM contribuyente WHERE est_con = 'A' ORDER BY nom_con ASC";
+        $this->que_bd = "SELECT * FROM contribuyente  ORDER BY nom_con ASC";
         $resultado = $this->con_bd->query($this->que_bd);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }

@@ -1,7 +1,7 @@
 <?php
 // Dashboard.php // vista
 
-include 'layouts/header.php';
+include 'layouts/headerDashboard.php';
 
 // Verificar sesión (puedes moverlo a proteger_vista si prefieres)
 if (!isset($_SESSION['nom_usu']) || !isset($_SESSION['nom_rol'])) {
@@ -12,7 +12,7 @@ if (!isset($_SESSION['nom_usu']) || !isset($_SESSION['nom_rol'])) {
 $nombre_usuario = $_SESSION['nom_usu'];
 $nombre_rol     = $_SESSION['nom_rol'];
 
-include 'layouts/sidebar.php';
+include 'layouts/sidebarDashboard.php';
 
 // ==========================
 // Placeholders (luego los tomamos de un DashboardController)
@@ -241,7 +241,7 @@ $actividadReciente = $dash->actividadesRecientes();
     </div>
 </div>
 
-<?php include 'layouts/footer.php'; ?>
+<?php include 'layouts/footerDashboard.php'; ?>
 
 <!-- Chart.js (no depende de jQuery) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
