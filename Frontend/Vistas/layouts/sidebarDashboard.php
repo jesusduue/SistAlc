@@ -22,6 +22,11 @@
             </a>
         </li>
         <li>
+            <a href="patentes/gestionPatentes.php" class="nav-link text-dark">
+                <i class="fas fa-building me-2"></i> Patentes
+            </a>
+        </li>
+                <li>
             <a href="#" class="nav-link text-dark">
                 <i class="fas fa-building me-2"></i> Patentes
             </a>

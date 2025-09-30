@@ -100,7 +100,7 @@ $actividadReciente = $dash->actividadesRecientes();
 
     <!-- KPIs -->
     <div class="row g-3 mb-3">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-2">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="kpi-icon bg-primary-subtle">
@@ -114,7 +114,7 @@ $actividadReciente = $dash->actividadesRecientes();
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-2">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="kpi-icon bg-warning-subtle">
@@ -128,7 +128,7 @@ $actividadReciente = $dash->actividadesRecientes();
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-2">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="kpi-icon bg-info-subtle">
@@ -146,7 +146,7 @@ $actividadReciente = $dash->actividadesRecientes();
 
     <!-- Tarjetas de navegación -->
     <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-2">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-users fa-3x mb-3 text-primary"></i>
@@ -156,7 +156,7 @@ $actividadReciente = $dash->actividadesRecientes();
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-2">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-id-card fa-3x mb-3 text-success"></i>
@@ -166,21 +166,21 @@ $actividadReciente = $dash->actividadesRecientes();
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-2">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-building fa-3x mb-3 text-warning"></i>
                     <h5 class="card-title">Patentes</h5>
                     <p class="card-text">Control de actividades económicas y licencias.</p>
-                    <a href="#" class="btn btn-outline-warning">Administrar</a>
+                    <a href="../Vistas/patentes/gestionPatentes.php" class="btn btn-outline-warning">Administrar</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Gráficas (estático por ahora) -->
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-xl-8"><!-- ★ xl en vez de lg para más comodidad -->
+    <div class="row g-3 mb-2">
+        <div class="col-12 col-xl-6"><!-- ★ xl en vez de lg para más comodidad -->
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <span class="fw-semibold">Ingresos Mensuales (<?php echo date('Y'); ?>)</span>
@@ -210,36 +210,6 @@ $actividadReciente = $dash->actividadesRecientes();
             </div>
         </div>
     </div>
-
-    <!-- Actividad reciente -->
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <span class="fw-semibold">Actividad Reciente</span>
-            <div class="d-flex align-items-center gap-2">
-                <span class="small text-muted">Mostrando <span id="rangeInfo">1-5</span></span>
-                <nav>
-                    <ul class="pagination pagination-sm mb-0" id="paginador"></ul>
-                </nav>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Usuario</th>
-                        <th>Acción</th>
-                        <th>Módulo</th>
-                        <th>Detalles</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyActividad">
-                    <!-- Filas generadas por JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
 <?php include 'layouts/footerDashboard.php'; ?>
 
@@ -303,56 +273,4 @@ new Chart(document.getElementById('chartTipos'), {
   }
 });
 
-// ===== Actividad Reciente: paginación nativa =====
-const pageSize = 5;
-let currentPage = 1;
-const tbody      = document.getElementById('tbodyActividad');
-const paginador  = document.getElementById('paginador');
-const rangeInfo  = document.getElementById('rangeInfo');
-
-function badgeClass(kind){
-  switch(kind){
-    case 'success': return 'badge text-bg-success';
-    case 'danger':  return 'badge text-bg-danger';
-    case 'primary': return 'badge text-bg-primary';
-    default:        return 'badge text-bg-secondary';
-  }
-}
-function renderTabla(){
-  const start = (currentPage-1)*pageSize;
-  const end   = Math.min(start+pageSize, actividadReciente.length);
-  rangeInfo.textContent = (actividadReciente.length===0) ? '0-0' : `${start+1}-${end}`;
-  tbody.innerHTML = actividadReciente.slice(start,end).map(r=>`
-    <tr>
-      <td>${r.fecha}</td>
-      <td>${r.usuario}</td>
-      <td><span class="${badgeClass(r.badge)}">${r.accion}</span></td>
-      <td>${r.modulo}</td>
-      <td>${r.detalle}</td>
-    </tr>`).join('');
-}
-function renderPaginador(){
-  const totalPages = Math.max(1, Math.ceil(actividadReciente.length / pageSize));
-  let html = '';
-  html += `<li class="page-item ${currentPage===1?'disabled':''}"><a class="page-link" href="#" data-pg="prev">«</a></li>`;
-  for(let p=1;p<=totalPages;p++){
-    html += `<li class="page-item ${p===currentPage?'active':''}"><a class="page-link" href="#" data-pg="${p}">${p}</a></li>`;
-  }
-  html += `<li class="page-item ${currentPage===totalPages?'disabled':''}"><a class="page-link" href="#" data-pg="next">»</a></li>`;
-  paginador.innerHTML = html;
-}
-paginador.addEventListener('click', (e)=>{
-  const a = e.target.closest('a[data-pg]');
-  if(!a) return;
-  e.preventDefault();
-  const totalPages = Math.max(1, Math.ceil(actividadReciente.length / pageSize));
-  const pg = a.getAttribute('data-pg');
-  if(pg==='prev' && currentPage>1) currentPage--;
-  else if(pg==='next' && currentPage<totalPages) currentPage++;
-  else if(!isNaN(parseInt(pg))) currentPage = parseInt(pg);
-  renderPaginador();
-  renderTabla();
-});
-renderPaginador();
-renderTabla();
 </script>
