@@ -29,8 +29,8 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="est_usu" class="form-label">Estado *</label>
-                            <select name="est_usu" id="est_usu" class="form-select" required>
+                            <label for="est_registro" class="form-label">Estado *</label>
+                            <select name="est_registro" id="est_registro" class="form-select" required>
                                 <option value="A">Activo</option>
                                 <option value="I">Inactivo</option>
                             </select>
@@ -47,3 +47,4 @@
         </div>
     </div>
 </div>
+

@@ -24,7 +24,7 @@
                         <td><?= htmlspecialchars($con['tel_con']) ?></td>
                         <td><?= htmlspecialchars($con['ema_con']) ?></td>
                         <td><?= htmlspecialchars($con['dir_con']) ?></td>
-                        <td><?= $con['est_con'] === 'A' ? 'Activo' : 'Inactivo' ?></td>
+                        <td><?= $con['est_registro'] === 'A' ? 'Activo' : 'Inactivo' ?></td>
                         <td>
                             <button
                                 type="button"
@@ -41,10 +41,10 @@
                             <?php if ($con['id_con'] != $_SESSION['id_usu']): ?>
                                 <!-- boton para cambiar estado -->
                                 <a href="javascript:void(0);"
-                                    class="btn btn-sm btn-<?php echo ($con['est_con'] === 'A') ? 'success' : 'danger'; ?> btn-cambiar-estado"
-                                    data-url="../../../Backend/controlador/contribuyenteController.php?accion=cambiar_estado&id=<?php echo $con['id_con']; ?>&nuevo_estado=<?php echo ($con['est_con'] === 'A') ? 'I' : 'A'; ?>"
+                                    class="btn btn-sm btn-<?php echo ($con['est_registro'] === 'A') ? 'success' : 'danger'; ?> btn-cambiar-estado"
+                                    data-url="../../../Backend/controlador/contribuyenteController.php?accion=cambiar_estado&id=<?php echo $con['id_con']; ?>&nuevo_estado=<?php echo ($con['est_registro'] === 'A') ? 'I' : 'A'; ?>"
                                     data-nombre="<?php echo htmlspecialchars($con['nom_con']); ?>">
-                                    <i class="fas fa-toggle-<?php echo ($con['est_con'] === 'A') ? 'off' : 'on'; ?>"></i>
+                                    <i class="fas fa-toggle-<?php echo ($con['est_registro'] === 'A') ? 'off' : 'on'; ?>"></i>
                                 </a>
 
                                 <a href="javascript:void(0);"
@@ -61,3 +61,4 @@
         </table>
     </div>
 </div>
+

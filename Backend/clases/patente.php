@@ -15,10 +15,10 @@ class Patente extends Utilidad
     public $rub_pat;
     public $fky_usu;
     public $est_pat;
-    public $est_tab_pat;
+    public $est_registro;
 
     /**
-     * Consulta todas las patentes activas (est_tab_pat = 'A').
+     * Consulta todas las patentes activas (est_registro = 'A').
      */
     public function consultar_activas()
     {
@@ -29,12 +29,12 @@ class Patente extends Utilidad
                            WHEN 'V' THEN 'Vencida'
                            ELSE 'Desconocido'
                        END AS estado_patente,
-                       CASE p.est_tab_pat
+                       CASE p.est_registro
                            WHEN 'A' THEN 'Activo'
                            ELSE 'Inactivo'
                        END AS estado_registro
                   FROM patente p
-                 WHERE p.est_tab_pat = 'A'
+                 WHERE p.est_registro = 'A'
                  ORDER BY p.fec_pat DESC, p.id_pat ASC";
         $res = $this->con_bd->query($sql);
         return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
@@ -47,7 +47,7 @@ class Patente extends Utilidad
     public function registrar($datos)
     {
         $this->que_bd = "INSERT INTO patente
-            (fec_pat, num_pat, rif_pat, nom_pat, fky_con, dir_pat, rub_pat, fky_usu, est_pat, est_tab_pat)
+            (fec_pat, num_pat, rif_pat, nom_pat, fky_con, dir_pat, rub_pat, fky_usu, est_pat, est_registro)
             VALUES (CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?, 'A')";
         $stmt = $this->con_bd->prepare($this->que_bd);
         $estado = isset($datos['est_pat']) ? $datos['est_pat'] : 'S';
@@ -98,7 +98,7 @@ class Patente extends Utilidad
      */
     public function cambiar_estado_tabla($id, $nuevo_estado)
     {
-        $stmt = $this->con_bd->prepare("UPDATE patente SET est_tab_pat = ? WHERE id_pat = ?");
+        $stmt = $this->con_bd->prepare("UPDATE patente SET est_registro = ? WHERE id_pat = ?");
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
@@ -163,7 +163,7 @@ class Patente extends Utilidad
     public function buscar($termino)
     {
         $this->que_bd = "SELECT * FROM patente
-                         WHERE est_tab_pat = 'A' AND
+                         WHERE est_registro = 'A' AND
                                (num_pat LIKE ? OR
                                 rif_pat LIKE ? OR
                                 nom_pat LIKE ? OR
@@ -179,3 +179,4 @@ class Patente extends Utilidad
     }
 }
 ?>
+

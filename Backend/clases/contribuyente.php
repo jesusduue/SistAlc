@@ -10,8 +10,8 @@ class Contribuyente extends Utilidad
     public $tel_con;
     public $ema_con;
     public $dir_con;
-    public $fky_usu;
-    public $est_con;
+    public $fky_usu_registro;
+    public $est_registro;
 
     /**
      * Consulta todos los contribuyentes activos.
@@ -19,9 +19,9 @@ class Contribuyente extends Utilidad
     public function consultar_activos()
     {
         $sql = "SELECT c.*,
-                       CASE c.est_con WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
+                       CASE c.est_registro WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
                   FROM contribuyente c
-                 WHERE c.est_con = 'A'
+                 WHERE c.est_registro = 'A'
                  ORDER BY c.id_con ASC";
         $res = $this->con_bd->query($sql);
         return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
@@ -33,7 +33,7 @@ class Contribuyente extends Utilidad
     public function registrar($datos)
     {
         $this->que_bd = "INSERT INTO contribuyente 
-            (nom_con, rif_con, tel_con, ema_con, dir_con, fky_usu, est_con) 
+            (nom_con, rif_con, tel_con, ema_con, dir_con, fky_usu_registro, est_registro) 
             VALUES (?, ?, ?, ?, ?, ?, 'A')";
         $stmt = $this->con_bd->prepare($this->que_bd);
         $stmt->bind_param(
@@ -43,7 +43,7 @@ class Contribuyente extends Utilidad
             $datos['tel_con'],
             $datos['ema_con'],
             $datos['dir_con'],
-            $datos['fky_usu']
+            $datos['fky_usu_registro']
         );
        $ok = $stmt->execute();
        if ($ok) {
@@ -79,7 +79,7 @@ class Contribuyente extends Utilidad
      */
     public function cambiar_estado($id, $nuevo_estado)
     {
-        $stmt = $this->con_bd->prepare("UPDATE contribuyente SET est_con = ? WHERE id_con = ?");
+        $stmt = $this->con_bd->prepare("UPDATE contribuyente SET est_registro = ? WHERE id_con = ?");
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
@@ -138,7 +138,7 @@ class Contribuyente extends Utilidad
                                 ema_con LIKE ? OR 
                                 tel_con LIKE ? OR
                                 dir_con LIKE ?) 
-                         AND est_con = 'A' 
+                         AND est_registro = 'A' 
                          ORDER BY nom_con ASC";
         $stmt = $this->con_bd->prepare($this->que_bd);
         $like_termino = '%' . $termino . '%';
@@ -149,3 +149,8 @@ class Contribuyente extends Utilidad
     }
 }
 ?>
+
+
+
+
+

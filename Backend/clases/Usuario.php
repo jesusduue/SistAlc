@@ -12,7 +12,7 @@ class Usuario extends Utilidad
     public $nom_usu;
     public $cla_usu;
     public $fky_rol;
-    public $est_usu;
+    public $est_registro;
 
     /**
      * Valida las credenciales de un usuario contra la base de datos.
@@ -24,10 +24,10 @@ class Usuario extends Utilidad
     public function login($nombreUsuario, $clave)
     {
         // Consulta SQL con marcadores de posición (?) para seguridad
-        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.cla_usu, u.fky_rol, u.est_usu, r.nom_rol 
+        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.cla_usu, u.fky_rol, u.est_registro, r.nom_rol 
                          FROM usuario u
                          INNER JOIN rol r ON u.fky_rol = r.id_rol
-                         WHERE u.nom_usu = ? AND u.est_usu = 'A'";
+                         WHERE u.nom_usu = ? AND u.est_registro = 'A'";
 
         // Preparar la sentencia
         $stmt = $this->con_bd->prepare($this->que_bd);
@@ -145,8 +145,8 @@ class Usuario extends Utilidad
 
     public function consultar_todos_con_rol()
     {
-        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.fky_rol, u.est_usu, r.nom_rol,
-                     CASE u.est_usu WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
+        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.fky_rol, u.est_registro, r.nom_rol,
+                     CASE u.est_registro WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
                      FROM usuario u
                      INNER JOIN rol r ON u.fky_rol = r.id_rol
                      ORDER BY u.id_usu DESC";
@@ -166,31 +166,31 @@ class Usuario extends Utilidad
 
     public function registrar($datos)
     {
-        $this->que_bd = "INSERT INTO usuario (nom_usu, cla_usu, fky_rol, est_usu) VALUES (?, ?, ?, ?)";
+        $this->que_bd = "INSERT INTO usuario (nom_usu, cla_usu, fky_rol, est_registro) VALUES (?, ?, ?, ?)";
         $stmt = $this->con_bd->prepare($this->que_bd);
         $clave_hasheada = password_hash($datos['cla_usu'], PASSWORD_DEFAULT);
-        $stmt->bind_param("ssis", $datos['nom_usu'], $clave_hasheada, $datos['fky_rol'], $datos['est_usu']);
+        $stmt->bind_param("ssis", $datos['nom_usu'], $clave_hasheada, $datos['fky_rol'], $datos['est_registro']);
         return $stmt->execute();
     }
 
     public function modificar($datos)
     {
         if (!empty($datos['cla_usu'])) {
-            $this->que_bd = "UPDATE usuario SET nom_usu = ?, cla_usu = ?, fky_rol = ?, est_usu = ? WHERE id_usu = ?";
+            $this->que_bd = "UPDATE usuario SET nom_usu = ?, cla_usu = ?, fky_rol = ?, est_registro = ? WHERE id_usu = ?";
             $clave_hasheada = password_hash($datos['cla_usu'], PASSWORD_DEFAULT);
             $stmt = $this->con_bd->prepare($this->que_bd);
-            $stmt->bind_param("ssisi", $datos['nom_usu'], $clave_hasheada, $datos['fky_rol'], $datos['est_usu'], $datos['id_usu']);
+            $stmt->bind_param("ssisi", $datos['nom_usu'], $clave_hasheada, $datos['fky_rol'], $datos['est_registro'], $datos['id_usu']);
         } else {
-            $this->que_bd = "UPDATE usuario SET nom_usu = ?, fky_rol = ?, est_usu = ? WHERE id_usu = ?";
+            $this->que_bd = "UPDATE usuario SET nom_usu = ?, fky_rol = ?, est_registro = ? WHERE id_usu = ?";
             $stmt = $this->con_bd->prepare($this->que_bd);
-            $stmt->bind_param("sisi", $datos['nom_usu'], $datos['fky_rol'], $datos['est_usu'], $datos['id_usu']);
+            $stmt->bind_param("sisi", $datos['nom_usu'], $datos['fky_rol'], $datos['est_registro'], $datos['id_usu']);
         }
         return $stmt->execute();
     }
 
     public function cambiar_estado($id, $nuevo_estado)
     {
-        $stmt = $this->con_bd->prepare("UPDATE usuario SET est_usu = ? WHERE id_usu = ?");
+        $stmt = $this->con_bd->prepare("UPDATE usuario SET est_registro = ? WHERE id_usu = ?");
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
@@ -203,3 +203,4 @@ class Usuario extends Utilidad
         return $stmt->execute();
     }
 }//fin archivo php
+

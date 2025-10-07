@@ -1,10 +1,4 @@
-<?php
-$descripcionesTramite = [
-    'S' => 'Solicitada',
-    'P' => 'Pagada',
-    'V' => 'Vencida'
-];
-?>
+
 <div class="card">
     <div class="card-header">Listado de Patentes</div>
     <div class="card-body table-responsive">
@@ -19,8 +13,6 @@ $descripcionesTramite = [
                     <th>Representante</th>
                     <th>Dirección</th>
                     <th>Rubro</th>
-                    <!--<th>Estado trámite</th>
-                    <th>Estado registro</th> -->
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -36,11 +28,8 @@ $descripcionesTramite = [
                         <td><?= htmlspecialchars($pat['dir_pat']); ?></td>
                         <td><?= htmlspecialchars($pat['rub_pat']); ?></td>
 
-                        <!--NO ES NECESARIO MOSTRAR PORQUE SE EVALUA EN LA TABLA licencia    
-                        <td><?= htmlspecialchars($descripcionesTramite[$pat['est_pat']] ?? 'Desconocido'); ?></td>
-                        <td><?= $pat['est_tab_pat'] === 'A' ? 'Activo' : 'Inactivo'; ?></td> -->
-
-                        <td class="d-flex gap-2 flex-wrap">
+                        <!-- boton de que se solo puede tener permiso el usuario Jefe patentes, de catastro y secretarias de catastro y de patente -->
+                        <td class="d-flex gap-1 flex-wrap">
                             <button
                                 type="button"
                                 class="btn btn-sm btn-warning"
@@ -57,27 +46,15 @@ $descripcionesTramite = [
                                 Editar
                             </button>
 
-                            <!-- Boton para hacer borrado logico  -->
+                            <!-- Boton para hacer borrado logico 
+                                solo puede tener acceso el director y jefe de patentes -->
                             <a
                                 href="javascript:void(0);"
-                                class="btn btn-sm btn-<?= ($pat['est_tab_pat'] === 'A') ? 'success' : 'secondary'; ?> btn-cambiar-estado-patente"
-                                data-url="../../../Backend/controlador/patenteController.php?accion=cambiar_estado&id=<?= $pat['id_pat']; ?>&nuevo_estado=<?= ($pat['est_tab_pat'] === 'A') ? 'I' : 'A'; ?>"
+                                class="btn btn-sm btn-<?= ($pat['est_registro'] === 'A') ? 'success' : 'secondary'; ?> btn-cambiar-estado-patente"
+                                data-url="../../../Backend/controlador/patenteController.php?accion=cambiar_estado&id=<?= $pat['id_pat']; ?>&nuevo_estado=<?= ($pat['est_registro'] === 'A') ? 'I' : 'A'; ?>"
                                 data-numero="<?= htmlspecialchars($pat['num_pat']); ?>">
-                                <i class="fas fa-toggle-<?= ($pat['est_tab_pat'] === 'A') ? 'off' : 'on'; ?>"></i>
+                                <i class="fas fa-toggle-<?= ($pat['est_registro'] === 'A') ? 'off' : 'on'; ?>"></i>
                             </a>
-
-                            <!--BOTON PARA CAMBIAR EL ESTADO MANUAL DE LA SOLICITUD,PAGADO O VENCIMIENTO  de la patente    
-                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-                                    Estado trámite
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item btn-actualizar-estado" href="javascript:void(0);" data-url="../../../Backend/controlador/patenteController.php?accion=actualizar_estado&id=<?= $pat['id_pat']; ?>&nuevo_estado=S" data-numero="<?= htmlspecialchars($pat['num_pat']); ?>" data-estado="Solicitada">Solicitada</a></li>
-                                    <li><a class="dropdown-item btn-actualizar-estado" href="javascript:void(0);" data-url="../../../Backend/controlador/patenteController.php?accion=actualizar_estado&id=<?= $pat['id_pat']; ?>&nuevo_estado=P" data-numero="<?= htmlspecialchars($pat['num_pat']); ?>" data-estado="Pagada">Pagada</a></li>
-                                    <li><a class="dropdown-item btn-actualizar-estado" href="javascript:void(0);" data-url="../../../Backend/controlador/patenteController.php?accion=actualizar_estado&id=<?= $pat['id_pat']; ?>&nuevo_estado=V" data-numero="<?= htmlspecialchars($pat['num_pat']); ?>" data-estado="Vencida">Vencida</a></li>
-                                </ul>
-                            </div> -->
-
 
                             <!-- BOTON para hacer borrado fisico -->
                             <a
@@ -94,3 +71,4 @@ $descripcionesTramite = [
         </table>
     </div>
 </div>
+

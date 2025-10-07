@@ -9,7 +9,7 @@ class Rol extends Utilidad
 {
     public $id_rol;
     public $nom_rol;
-    public $est_rol;
+    public $est_registro;
 
     /**
      * Consulta todos los roles activos en la base de datos.
@@ -17,7 +17,7 @@ class Rol extends Utilidad
      */
     public function consultar_activos()
     {
-        $this->que_bd = "SELECT * FROM rol WHERE est_rol = 'A' ORDER BY nom_rol ASC";
+        $this->que_bd = "SELECT * FROM rol WHERE est_registro = 'A' ORDER BY nom_rol ASC";
         $resultado = $this->con_bd->query($this->que_bd);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
@@ -52,7 +52,7 @@ class Rol extends Utilidad
      */
     public function registrar($nombre)
     {
-        $this->que_bd = "INSERT INTO rol (nom_rol, est_rol) VALUES (?, 'A')";
+        $this->que_bd = "INSERT INTO rol (nom_rol, est_registro) VALUES (?, 'A')";
         $stmt = $this->con_bd->prepare($this->que_bd);
         $stmt->bind_param("s", $nombre);
         return $stmt->execute();
@@ -63,9 +63,11 @@ class Rol extends Utilidad
      */
     public function cambiar_estado($id, $nuevo_estado)
     {
-        $stmt = $this->con_bd->prepare("UPDATE rol SET est_rol = ? WHERE id_rol = ?");
+        $stmt = $this->con_bd->prepare("UPDATE rol SET est_registro = ? WHERE id_rol = ?");
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
 }
 ?>
+
+

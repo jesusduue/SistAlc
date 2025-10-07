@@ -18,7 +18,7 @@
                             <td><?php echo htmlspecialchars($usu['nom_usu']); ?></td>
                             <td><?php echo htmlspecialchars($usu['nom_rol']); ?></td>
                             <td>
-                                <span class="badge bg-<?php echo ($usu['est_usu'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge bg-<?php echo ($usu['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
                                     <?php echo htmlspecialchars($usu['estado_descripcion']); ?>
                                 </span>
                             </td>
@@ -32,17 +32,17 @@
                                     data-id="<?php echo $usu['id_usu']; ?>"
                                     data-nombre="<?php echo htmlspecialchars($usu['nom_usu']); ?>"
                                     data-rol="<?php echo $usu['fky_rol']; ?>"
-                                    data-estado="<?php echo $usu['est_usu']; ?>">
+                                    data-estado="<?php echo $usu['est_registro']; ?>">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 
                                 <?php if ($usu['id_usu'] != $_SESSION['id_usu']): ?>
                                     <!-- botón para cambiar estado -->
                                     <a href="javascript:void(0);"
-                                        class="btn btn-sm btn-<?php echo ($usu['est_usu'] === 'A') ? 'success' : 'danger'; ?> btn-cambiar-estado"
-                                        data-url="../../../Backend/controlador/UsuarioController.php?accion=cambiar_estado&id=<?php echo $usu['id_usu']; ?>&estado_nuevo=<?php echo ($usu['est_usu'] === 'A') ? 'I' : 'A'; ?>"
+                                        class="btn btn-sm btn-<?php echo ($usu['est_registro'] === 'A') ? 'success' : 'danger'; ?> btn-cambiar-estado"
+                                        data-url="../../../Backend/controlador/UsuarioController.php?accion=cambiar_estado&id=<?php echo $usu['id_usu']; ?>&estado_nuevo=<?php echo ($usu['est_registro'] === 'A') ? 'I' : 'A'; ?>"
                                         data-nombre="<?php echo htmlspecialchars($usu['nom_usu']); ?>">
-                                        <i class="fas fa-toggle-<?php echo ($usu['est_usu'] === 'A') ? 'off' : 'on'; ?>"></i>
+                                        <i class="fas fa-toggle-<?php echo ($usu['est_registro'] === 'A') ? 'off' : 'on'; ?>"></i>
                                     </a>
 
                                     <!-- botón para eliminar usuario para que funcione con sweetalert -->

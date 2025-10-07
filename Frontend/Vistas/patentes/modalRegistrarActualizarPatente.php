@@ -1,3 +1,4 @@
+<!-- modal para actualizar o registrar patente -->
 <div class="modal fade" id="modalPatente" tabindex="-1" aria-labelledby="modalPatenteLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -23,8 +24,19 @@
                             <label for="nom_pat" class="form-label">Nombre / Razón Social *</label>
                             <input type="text" name="nom_pat" id="nom_pat" class="form-control" required>
                         </div>
+
+                        <!-- buscardor en tiempo real para encontra el Representante Legal requerido -->
                         <div class="col-md-6">
                             <label for="fky_con" class="form-label">Representante Legal *</label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input
+                                    type="text"
+                                    id="buscarRepresentante"
+                                    class="form-control"
+                                    placeholder="Buscar contribuyente..."
+                                    autocomplete="off">
+                            </div>
                             <select name="fky_con" id="fky_con" class="form-select" required>
                                 <option value="">Seleccione un contribuyente</option>
                                 <?php foreach ($contribuyentes as $con): ?>
@@ -33,7 +45,12 @@
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+                            <div id="sinCoincidenciasRepresentante" class="form-text text-danger d-none">
+                                No se encontraron contribuyentes con ese criterio.
+                            </div>
                         </div>
+
+
                         <div class="col-12">
                             <label for="dir_pat" class="form-label">Dirección *</label>
                             <textarea name="dir_pat" id="dir_pat" class="form-control" rows="2" required></textarea>

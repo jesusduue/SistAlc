@@ -20,7 +20,8 @@ class Auditoria extends Utilidad
     public $metadata;
     public $ip;
     public $user_agent;
-    public $fecha;
+    public $fec_log;
+    public $est_log;
 
     /**
      * Registra una actividad en log_actividad.
@@ -87,7 +88,7 @@ class Auditoria extends Utilidad
      */
     public function consultar_todas()
     {
-        $this->que_bd = "SELECT * FROM log_actividad ORDER BY fecha DESC";
+        $this->que_bd = "SELECT * FROM log_actividad WHERE est_log = 'A' ORDER BY fec_log DESC";
         $resultado = $this->con_bd->query($this->que_bd);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
@@ -97,7 +98,7 @@ class Auditoria extends Utilidad
      */
     public function consultar_por_usuario($id_usuario)
     {
-        $stmt = $this->con_bd->prepare("SELECT * FROM log_actividad WHERE fky_usu = ? ORDER BY fecha DESC");
+        $stmt = $this->con_bd->prepare("SELECT * FROM log_actividad WHERE fky_usu = ? AND est_log = 'A' ORDER BY fec_log DESC");
         $stmt->bind_param("i", $id_usuario);
         $stmt->execute();
         $resultado = $stmt->get_result();
@@ -130,3 +131,4 @@ class Auditoria extends Utilidad
 
     //
 }
+

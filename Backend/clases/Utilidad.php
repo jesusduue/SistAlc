@@ -29,12 +29,12 @@ class Utilidad
         $this->nombre_servidor = "localhost";
         $this->usuario_servidor = "root";
         $this->clave_servidor = "";
-        $this->nombre_bd = "alcaldia"; // **MODIFICACIÓN: Se asigna el nombre de la BD directamente.**
+        $this->nombre_bd = "alcaldiaV2"; // **MODIFICACIÓN: Se asigna el nombre de la BD directamente.**
 
         // Intentar conectar a la base de datos
         try {
             $this->con_bd = new mysqli($this->nombre_servidor, $this->usuario_servidor, $this->clave_servidor, $this->nombre_bd);
-            $this->con_bd->set_charset("utf8"); // Buena práctica para manejar acentos y caracteres especiales
+            $this->con_bd->set_charset("utf8mb4"); // Buena práctica para manejar acentos y caracteres especiales
 
             // Verificar si hay errores en la conexión
             if ($this->con_bd->connect_error) {

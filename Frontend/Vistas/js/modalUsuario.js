@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputPassword = document.getElementById('cla_usu');
         const labelPassword = document.getElementById('labelPassword');
         const selectRol = document.getElementById('fky_rol');
-        const selectEstado = document.getElementById('est_usu');
+        const selectEstado = document.getElementById('est_registro');
         const btnSubmitText = document.querySelector('#btnSubmit span');
         const btnSubmitIcon = document.querySelector('#btnSubmit i');
 

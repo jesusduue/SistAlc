@@ -87,3 +87,4 @@ const actividadReciente = <?php echo json_encode($actividadReciente ?? [], JSON_
 
 </body>
 </html>
+

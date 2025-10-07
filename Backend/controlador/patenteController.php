@@ -97,7 +97,7 @@ if (isset($_REQUEST['accion'])) {
 
         case 'cambiar_estado':
             if (isset($_GET['id'], $_GET['nuevo_estado'])) {
-                $ok = $patente->cambiar_estado_tabla((int)$_GET['id'], $_GET['nuevo_estado']);
+                $ok = $patente->cambiar_estado_registro((int)$_GET['id'], $_GET['nuevo_estado']);
                 if ($ok) {
                     $_SESSION['mensaje'] = [
                         'tipo'   => 'success',
@@ -137,7 +137,7 @@ if (isset($_REQUEST['accion'])) {
                         $_SESSION['id_usu'] ?? 0,
                         $_SESSION['nom_usu'] ?? 'Sistema',
                         'Patentes',
-                        'Actualización de estado',
+                        'Cambio de estado',
                         'Actualización de trámite patente ID ' . $_GET['id'],
                         'patente',
                         (int)$_GET['id'],
@@ -192,3 +192,4 @@ if (isset($_REQUEST['accion'])) {
     header('Location: ../../index.php');
     exit();
 }
+

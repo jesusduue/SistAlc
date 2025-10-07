@@ -274,3 +274,4 @@ new Chart(document.getElementById('chartTipos'), {
 });
 
 </script>
+

@@ -83,3 +83,4 @@ $contribuyentes = $contribuyente->consultar_activos(); // se puede camnbiar a co
         });
     }); 
 </script>
+
