@@ -11,7 +11,7 @@
                     <th>Teléfono</th>
                     <th>Correo</th>
                     <th>Dirección</th>
-                    <th>Estado</th>
+                    <!-- <th>Estado</th> -->
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -24,7 +24,7 @@
                         <td><?= htmlspecialchars($con['tel_con']) ?></td>
                         <td><?= htmlspecialchars($con['ema_con']) ?></td>
                         <td><?= htmlspecialchars($con['dir_con']) ?></td>
-                        <td><?= $con['est_registro'] === 'A' ? 'Activo' : 'Inactivo' ?></td>
+                        <!-- <td><?= $con['est_registro'] === 'A' ? 'Activo' : 'Inactivo' ?></td> -->
                         <td>
                             <button
                                 type="button"

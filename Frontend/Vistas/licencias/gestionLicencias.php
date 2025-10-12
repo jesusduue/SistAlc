@@ -2,7 +2,7 @@
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
 include '../layouts/sidebar.php';
-restringirAcceso('Administrador');
+restringirAcceso('licencias');
 
 require_once '../../../Backend/clases/licencia.php';
 require_once '../../../Backend/clases/patente.php';

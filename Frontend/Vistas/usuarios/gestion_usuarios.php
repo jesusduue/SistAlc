@@ -6,7 +6,7 @@ include '../layouts/header.php';
 
 // 2) Protección de vista y sesión
 include '../layouts/proteger_vista.php';
-restringirAcceso('Administrador');
+restringirAcceso('usuarios');
 
 
 

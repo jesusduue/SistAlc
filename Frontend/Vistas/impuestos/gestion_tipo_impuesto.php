@@ -2,7 +2,7 @@
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
 include '../layouts/sidebar.php';
-restringirAcceso('Administrador');
+restringirAcceso('impuestos');
 
 require_once '../../../Backend/clases/TipoImpuesto.php';
 $tipoImpuesto = new TipoImpuesto();

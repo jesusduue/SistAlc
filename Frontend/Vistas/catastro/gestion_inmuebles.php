@@ -2,7 +2,7 @@
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
 include '../layouts/sidebar.php';
-restringirAcceso('Administrador');
+restringirAcceso('inmuebles');
 
 require_once '../../../Backend/clases/Inmueble.php';
 $inmuebleModel = new Inmueble();

@@ -2,7 +2,7 @@
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
 include '../layouts/sidebar.php';
-restringirAcceso('Administrador');
+restringirAcceso('documentos_catastro');
 
 require_once '../../../Backend/clases/DocumentoLegal.php';
 $documentoLegal = new DocumentoLegal();
