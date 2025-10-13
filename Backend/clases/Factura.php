@@ -12,6 +12,7 @@ class Factura extends Utilidad
     public $des_fac;
     public $tot_fac;
     public $est_pago;
+    public $fec_anulacion;
     public $est_registro;
 
     /**
@@ -48,8 +49,8 @@ class Factura extends Utilidad
      */
     public function registrar(array $datos)
     {
-        $sql = "INSERT INTO factura (num_fac, fec_fac, fky_usu, fky_con, des_fac, tot_fac, est_pago, est_registro)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'A')";
+        $sql = "INSERT INTO factura (num_fac, fec_fac, fky_usu, fky_con, des_fac, tot_fac, est_pago, fec_anulacion, est_registro)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NULL, 'A')";
         $stmt = $this->con_bd->prepare($sql);
         $fecha = $datos['fec_fac'] ?? date('Y-m-d H:i:s');
         $estado = $datos['est_pago'] ?? 'E';
@@ -138,8 +139,9 @@ class Factura extends Utilidad
      */
     public function actualizar_estado_pago(int $id, string $estado)
     {
-        $stmt = $this->con_bd->prepare("UPDATE factura SET est_pago = ? WHERE id_fac = ?");
-        $stmt->bind_param('si', $estado, $id);
+        $fechaAnulacion = ($estado === 'A') ? date('Y-m-d H:i:s') : null;
+        $stmt = $this->con_bd->prepare("UPDATE factura SET est_pago = ?, fec_anulacion = ? WHERE id_fac = ?");
+        $stmt->bind_param('ssi', $estado, $fechaAnulacion, $id);
         return $stmt->execute();
     }
 
@@ -186,6 +188,28 @@ class Factura extends Utilidad
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows > 0;
+    }
+
+    /**
+     * Recupera informacion de una factura por su numero (incluyendo contribuyente).
+     */
+    public function consultar_por_numero(string $numero)
+    {
+        $sql = "SELECT f.*, c.nom_con, c.rif_con
+                  FROM factura f
+                  INNER JOIN contribuyente c ON f.fky_con = c.id_con
+                 WHERE f.num_fac = ?
+                 LIMIT 1";
+        $stmt = $this->con_bd->prepare($sql);
+        if (!$stmt) {
+            return null;
+        }
+        $stmt->bind_param('s', $numero);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $factura = $res ? $res->fetch_assoc() : null;
+        $stmt->close();
+        return $factura ?: null;
     }
 }
 ?>

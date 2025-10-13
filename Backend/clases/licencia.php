@@ -3,21 +3,18 @@ require_once 'Utilidad.php';
 
 class Licencia extends Utilidad
 {
-    // Columnas expuestas por la tabla licencia
     public $id_lic;
     public $num_lic;
     public $fky_pat;
+    public $fky_fac;
     public $fec_exp_lic;
     public $vig_lic;
     public $est_lic;
     public $est_registro;
 
-    /**
-     * Lista las licencias activas junto a los datos mas relevantes de la patente.
-     */
     public function consultar_activas()
     {
-        $sql = "SELECT l.*, p.num_pat, p.nom_pat,
+        $sql = "SELECT l.*, p.num_pat, p.nom_pat, f.num_fac,
                        CASE l.est_lic
                            WHEN 'S' THEN 'Solicitada'
                            WHEN 'P' THEN 'Pagada'
@@ -27,26 +24,26 @@ class Licencia extends Utilidad
                        CASE l.est_registro WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_registro
                   FROM licencia l
                   INNER JOIN patente p ON l.fky_pat = p.id_pat
+                  LEFT JOIN factura f ON l.fky_fac = f.id_fac
                  WHERE l.est_registro = 'A'
                  ORDER BY l.vig_lic DESC, l.id_lic ASC";
         $res = $this->con_bd->query($sql);
         return $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    /**
-     * Registra una licencia para una patente determinada.
-     */
-    public function registrar($datos)
+    public function registrar(array $datos)
     {
         $this->que_bd = "INSERT INTO licencia
-            (num_lic, fky_pat, fec_exp_lic, vig_lic, est_lic, est_registro)
-            VALUES (?, ?, ?, ?, ?, 'A')";
+            (num_lic, fky_pat, fky_fac, fec_exp_lic, vig_lic, est_lic, est_registro)
+            VALUES (?, ?, ?, ?, ?, ?, 'A')";
         $stmt = $this->con_bd->prepare($this->que_bd);
         $estado = $datos['est_lic'] ?? 'S';
+        $factura = $datos['fky_fac'] ?? null;
         $stmt->bind_param(
-            "sisss",
+            "siisss",
             $datos['num_lic'],
             $datos['fky_pat'],
+            $factura,
             $datos['fec_exp_lic'],
             $datos['vig_lic'],
             $estado
@@ -59,19 +56,18 @@ class Licencia extends Utilidad
         return $ok;
     }
 
-    /**
-     * Actualiza los datos de una licencia existente.
-     */
-    public function modificar($datos)
+    public function modificar(array $datos)
     {
         $this->que_bd = "UPDATE licencia
-                         SET num_lic = ?, fky_pat = ?, fec_exp_lic = ?, vig_lic = ?, est_lic = ?
+                         SET num_lic = ?, fky_pat = ?, fky_fac = ?, fec_exp_lic = ?, vig_lic = ?, est_lic = ?
                        WHERE id_lic = ?";
         $stmt = $this->con_bd->prepare($this->que_bd);
+        $factura = $datos['fky_fac'] ?? null;
         $stmt->bind_param(
-            "sisssi",
+            "siisssi",
             $datos['num_lic'],
             $datos['fky_pat'],
+            $factura,
             $datos['fec_exp_lic'],
             $datos['vig_lic'],
             $datos['est_lic'],
@@ -80,30 +76,21 @@ class Licencia extends Utilidad
         return $stmt->execute();
     }
 
-    /**
-     * Cambia el estado logico (A/I) del registro.
-     */
-    public function cambiar_estado_registro($id, $nuevo_estado)
+    public function cambiar_estado_registro(int $id, string $nuevo_estado)
     {
         $stmt = $this->con_bd->prepare("UPDATE licencia SET est_registro = ? WHERE id_lic = ?");
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
 
-    /**
-     * Actualiza el estado del tramite (S, P, V).
-     */
-    public function actualizar_estado_licencia($id, $nuevo_estado)
+    public function actualizar_estado_licencia(int $id, string $nuevo_estado)
     {
         $stmt = $this->con_bd->prepare("UPDATE licencia SET est_lic = ? WHERE id_lic = ?");
         $stmt->bind_param("si", $nuevo_estado, $id);
         return $stmt->execute();
     }
 
-    /**
-     * Devuelve una licencia segun su identificador.
-     */
-    public function consultar_por_id($id)
+    public function consultar_por_id(int $id)
     {
         $stmt = $this->con_bd->prepare("SELECT * FROM licencia WHERE id_lic = ?");
         $stmt->bind_param("i", $id);
@@ -112,10 +99,7 @@ class Licencia extends Utilidad
         return $resultado ? $resultado->fetch_assoc() : null;
     }
 
-    /**
-     * Lista licencias asociadas a una patente en orden de vigencia.
-     */
-    public function consultar_por_patente($idPatente)
+    public function consultar_por_patente(int $idPatente)
     {
         $stmt = $this->con_bd->prepare("SELECT * FROM licencia WHERE fky_pat = ? ORDER BY vig_lic DESC");
         $stmt->bind_param("i", $idPatente);
@@ -124,68 +108,85 @@ class Licencia extends Utilidad
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    /**
-     * Lista todas las licencias registradas, sin filtrar por estado.
-     */
     public function consultar_todas()
     {
-        $this->que_bd = "SELECT l.*, p.num_pat, p.nom_pat
+        $this->que_bd = "SELECT l.*, p.num_pat, p.nom_pat, f.num_fac
                            FROM licencia l
                            INNER JOIN patente p ON l.fky_pat = p.id_pat
+                           LEFT JOIN factura f ON l.fky_fac = f.id_fac
                        ORDER BY l.vig_lic DESC, l.id_lic ASC";
         $resultado = $this->con_bd->query($this->que_bd);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    /**
-     * Verifica si ya existe una licencia con el mismo numero.
-     */
-    public function numero_existe($numero)
+    public function numero_existe(string $numero, ?int $excluir_id = null)
     {
-        $stmt = $this->con_bd->prepare("SELECT id_lic FROM licencia WHERE num_lic = ? LIMIT 1");
-        $stmt->bind_param("s", $numero);
+        $sql = "SELECT id_lic FROM licencia WHERE num_lic = ?";
+        if ($excluir_id !== null) {
+            $sql .= " AND id_lic <> ?";
+            $stmt = $this->con_bd->prepare($sql);
+            $stmt->bind_param("si", $numero, $excluir_id);
+        } else {
+            $sql .= " LIMIT 1";
+            $stmt = $this->con_bd->prepare($sql);
+            $stmt->bind_param("s", $numero);
+        }
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows > 0;
     }
 
-    /**
-     * Determina si la patente tiene una licencia activa (registro A y estado S/P).
-     */
-    public function existe_activa_para_patente($idPatente)
+    public function existe_activa_para_patente(int $idPatente, ?int $excluir_id = null)
     {
-        $stmt = $this->con_bd->prepare(
-            "SELECT id_lic
-               FROM licencia
-              WHERE fky_pat = ?
-                AND est_registro = 'A'
-                AND est_lic IN ('S', 'P')
-              LIMIT 1"
-        );
-        $stmt->bind_param("i", $idPatente);
+        $sql = "SELECT id_lic
+                  FROM licencia
+                 WHERE fky_pat = ?
+                   AND est_registro = 'A'
+                   AND est_lic IN ('S', 'P')";
+        if ($excluir_id !== null) {
+            $sql .= " AND id_lic <> ?";
+            $stmt = $this->con_bd->prepare($sql);
+            $stmt->bind_param("ii", $idPatente, $excluir_id);
+        } else {
+            $sql .= " LIMIT 1";
+            $stmt = $this->con_bd->prepare($sql);
+            $stmt->bind_param("i", $idPatente);
+        }
         $stmt->execute();
         $stmt->store_result();
         return $stmt->num_rows > 0;
     }
 
-    /**
-     * Elimina fisicamente una licencia.
-     */
-    public function eliminar($id)
+    public function factura_en_uso(int $facturaId, ?int $excluir_id = null): bool
+    {
+        $sql = "SELECT id_lic FROM licencia WHERE fky_fac = ?";
+        if ($excluir_id !== null) {
+            $sql .= " AND id_lic <> ?";
+            $stmt = $this->con_bd->prepare($sql);
+            $stmt->bind_param("ii", $facturaId, $excluir_id);
+        } else {
+            $sql .= " LIMIT 1";
+            $stmt = $this->con_bd->prepare($sql);
+            $stmt->bind_param("i", $facturaId);
+        }
+        $stmt->execute();
+        $stmt->store_result();
+        return $stmt->num_rows > 0;
+    }
+
+    public function eliminar(int $id)
     {
         $stmt = $this->con_bd->prepare("DELETE FROM licencia WHERE id_lic = ?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 
-    /**
-     * Busca licencias activas segun numero, patente, vigencia o estado.
-     */
     public function buscar($termino)
     {
-        $this->que_bd = "SELECT l.*, p.num_pat, p.nom_pat
+        $this->que_bd = "SELECT l.*, p.num_pat, p.nom_pat, f.num_fac
                            FROM licencia l
                            INNER JOIN patente p ON l.fky_pat = p.id_pat
+                           LEFT JOIN factura f ON l.fky_fac = f.id_fac
                           WHERE l.est_registro = 'A'
                             AND (
                                 l.num_lic LIKE ? OR
@@ -201,6 +202,34 @@ class Licencia extends Utilidad
         $stmt->execute();
         $resultado = $stmt->get_result();
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    public function consultar_detallada(int $id)
+    {
+        $sql = "SELECT l.*,
+                       p.num_pat,
+                       p.nom_pat,
+                       p.rif_pat,
+                       p.dir_pat,
+                       c.nom_con,
+                       c.rif_con,
+                       c.dir_con,
+                       f.num_fac,
+                       f.fec_fac,
+                       f.tot_fac
+                  FROM licencia l
+                  INNER JOIN patente p ON l.fky_pat = p.id_pat
+                  INNER JOIN contribuyente c ON p.fky_con = c.id_con
+                  LEFT JOIN factura f ON l.fky_fac = f.id_fac
+                 WHERE l.id_lic = ?
+                 LIMIT 1";
+        $stmt = $this->con_bd->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $datos = $res ? $res->fetch_assoc() : null;
+        $stmt->close();
+        return $datos ?: null;
     }
 }
 ?>

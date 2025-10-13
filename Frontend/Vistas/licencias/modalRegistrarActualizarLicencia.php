@@ -9,10 +9,21 @@
                 <div class="modal-body">
                     <input type="hidden" name="accion" id="formAccionLicencia" value="">
                     <input type="hidden" name="id_lic" id="formIdLicencia" value="">
+                    <input type="hidden" name="fky_fac" id="fky_fac" value="">
 
                     <div class="mb-3">
                         <label for="num_lic" class="form-label">Numero de licencia *</label>
                         <input type="text" name="num_lic" id="num_lic" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="num_fac_ref" class="form-label">Numero de factura asociada *</label>
+                        <div class="input-group">
+                            <input type="text" name="num_fac_ref" id="num_fac_ref" class="form-control" placeholder="Ej. 000123" required>
+                            <button type="button" class="btn btn-outline-secondary" id="btnValidarFactura">
+                                <i class="fas fa-search"></i> Validar
+                            </button>
+                        </div>
+                        <div class="form-text" id="infoFacturaSeleccionada">Debe validar la factura para poder guardar.</div>
                     </div>
                     <div class="mb-3">
                         <label for="fky_pat" class="form-label">Patente *</label>

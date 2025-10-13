@@ -14,6 +14,7 @@ $descripcionEstado = [
                     <th>ID</th>
                     <th>Numero</th>
                     <th>Patente</th>
+                    <th>Factura</th>
                     <th>Expedicion</th>
                     <th>Vigencia</th>
                     <th>Estado tramite</th>
@@ -24,13 +25,15 @@ $descripcionEstado = [
             <tbody>
                 <?php foreach ($licencias as $lic): ?>
                     <?php
-                    $infoPatente = $mapaPatentes[$lic['fky_pat']] ?? ['numero' => 'N/D', 'nombre' => ''];
+                    $infoPatente = $mapaPatentes[$lic['fky_pat']] ?? ['numero' => 'N/D', 'nombre' => '', 'contribuyente' => '', 'rif' => ''];
                     $patenteTexto = trim(($infoPatente['numero'] ?? '') . ' - ' . ($infoPatente['nombre'] ?? ''));
+                    $facturaTexto = $lic['num_fac'] ? ('#' . $lic['num_fac']) : 'Sin asignar';
                     ?>
                     <tr>
                         <td><?= htmlspecialchars($lic['id_lic']); ?></td>
                         <td><?= htmlspecialchars($lic['num_lic']); ?></td>
                         <td><?= htmlspecialchars($patenteTexto); ?></td>
+                        <td><?= htmlspecialchars($facturaTexto); ?></td>
                         <td><?= htmlspecialchars($lic['fec_exp_lic']); ?></td>
                         <td><?= htmlspecialchars($lic['vig_lic']); ?></td>
                         <td><?= htmlspecialchars($descripcionEstado[$lic['est_lic']] ?? 'Desconocido'); ?></td>
@@ -51,9 +54,19 @@ $descripcionEstado = [
                                 data-expedicion="<?= htmlspecialchars($lic['fec_exp_lic']); ?>"
                                 data-vigencia="<?= htmlspecialchars($lic['vig_lic']); ?>"
                                 data-estado="<?= htmlspecialchars($lic['est_lic']); ?>"
+                                data-factura="<?= htmlspecialchars($lic['num_fac']); ?>"
+                                data-factura-id="<?= htmlspecialchars($lic['fky_fac']); ?>"
+                                data-contribuyente="<?= htmlspecialchars($infoPatente['contribuyente'] ?? ''); ?>"
                                 data-etiqueta="<?= htmlspecialchars($patenteTexto); ?>">
                                 Editar
                             </button>
+                            <a
+                                href="imprimirLicencia.php?id=<?= $lic['id_lic']; ?>"
+                                target="_blank"
+                                rel="noopener"
+                                class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-print"></i>
+                            </a>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                                     Estado tramite

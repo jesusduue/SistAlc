@@ -3,6 +3,8 @@
 session_start();
 
 require_once '../clases/licencia.php';
+require_once '../clases/Factura.php';
+require_once '../clases/Patente.php';
 require_once '../clases/auditoria.php';
 
 if (!isset($_REQUEST['accion'])) {
@@ -10,8 +12,58 @@ if (!isset($_REQUEST['accion'])) {
     exit();
 }
 
+function validarFacturaParaLicencia(
+    Licencia $licencia,
+    Factura $facturaModel,
+    Patente $patenteModel,
+    string $numeroFactura,
+    int $patenteId,
+    ?int $licenciaId = null
+): array {
+    if ($numeroFactura === '') {
+        return ['ok' => false, 'mensaje' => 'Debe indicar el numero de factura asociada.'];
+    }
+
+    $factura = $facturaModel->consultar_por_numero($numeroFactura);
+    if (!$factura) {
+        return ['ok' => false, 'mensaje' => 'No se encontro la factura indicada.'];
+    }
+    if ($factura['est_registro'] !== 'A') {
+        return ['ok' => false, 'mensaje' => 'La factura indicada no esta activa.'];
+    }
+    if ($factura['est_pago'] !== 'P') {
+        return ['ok' => false, 'mensaje' => 'La factura debe estar pagada para emitir la licencia.'];
+    }
+    if (!empty($factura['fec_anulacion'])) {
+        return ['ok' => false, 'mensaje' => 'La factura indicada fue anulada y no puede utilizarse.'];
+    }
+
+    $patente = $patenteModel->consultar_por_id($patenteId);
+    if (!$patente) {
+        return ['ok' => false, 'mensaje' => 'La patente seleccionada no existe.'];
+    }
+    if ((int)$factura['fky_con'] !== (int)$patente['fky_con']) {
+        return ['ok' => false, 'mensaje' => 'La factura pertenece a un contribuyente distinto al de la patente.'];
+    }
+
+    if ($licencia->factura_en_uso((int)$factura['id_fac'], $licenciaId)) {
+        return ['ok' => false, 'mensaje' => 'La factura indicada ya esta asociada a otra licencia.'];
+    }
+
+    return ['ok' => true, 'factura' => $factura];
+}
+
+function responderJson(array $payload): void
+{
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
 $accion = $_REQUEST['accion'];
 $licencia = new Licencia();
+$facturaModel = new Factura();
+$patenteModel = new Patente();
 $auditoria = new Auditoria();
 
 switch ($accion) {
@@ -22,16 +74,52 @@ switch ($accion) {
             'fec_exp_lic' => $_POST['fec_exp_lic'] ?? date('Y-m-d'),
             'vig_lic'     => $_POST['vig_lic'] ?? date('Y-m-d'),
             'est_lic'     => $_POST['est_lic'] ?? 'S',
+            'fky_fac'     => null,
         ];
+        $numeroFactura = trim($_POST['num_fac_ref'] ?? '');
         $nuevoId = null;
+
+        if ($datos['num_lic'] === '') {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'Debe indicar el numero de la licencia.'];
+            break;
+        }
+        if ($datos['fky_pat'] <= 0) {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'Debe seleccionar la patente asociada.'];
+            break;
+        }
+
+        $validacionFactura = validarFacturaParaLicencia(
+            $licencia,
+            $facturaModel,
+            $patenteModel,
+            $numeroFactura,
+            $datos['fky_pat']
+        );
+        if (!$validacionFactura['ok']) {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => $validacionFactura['mensaje']];
+            break;
+        }
 
         if ($licencia->numero_existe($datos['num_lic'])) {
             $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'El numero de licencia ya existe.'];
-        } elseif ($licencia->existe_activa_para_patente($datos['fky_pat'])) {
+            break;
+        }
+        if ($licencia->existe_activa_para_patente($datos['fky_pat'])) {
             $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'La patente seleccionada ya posee una licencia activa.'];
-        } elseif ($licencia->registrar($datos)) {
+            break;
+        }
+
+        $datos['fky_fac'] = (int)$validacionFactura['factura']['id_fac'];
+
+        if ($licencia->registrar($datos)) {
             $nuevoId = $licencia->id_lic ?? null;
-            $_SESSION['mensaje'] = ['tipo' => 'success', 'texto' => 'Licencia registrada exitosamente.'];
+            $enlaceImpresion = $nuevoId
+                ? '<br><a href="../../Frontend/Vistas/licencias/imprimirLicencia.php?id=' . $nuevoId . '" class="btn btn-sm btn-outline-primary mt-2" target="_blank" rel="noopener">Imprimir licencia</a>'
+                : '';
+            $_SESSION['mensaje'] = [
+                'tipo' => 'success',
+                'texto' => 'Licencia registrada exitosamente.' . $enlaceImpresion,
+            ];
         } else {
             $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Ocurrio un error al registrar la licencia.'];
         }
@@ -44,7 +132,7 @@ switch ($accion) {
             'Nueva licencia: ' . ($datos['num_lic'] ?: 'SIN_NUMERO'),
             'licencia',
             $nuevoId,
-            ['patente' => $datos['fky_pat']]
+            ['patente' => $datos['fky_pat'], 'factura' => $numeroFactura]
         );
         break;
 
@@ -56,11 +144,48 @@ switch ($accion) {
             'fec_exp_lic'=> $_POST['fec_exp_lic'] ?? date('Y-m-d'),
             'vig_lic'    => $_POST['vig_lic'] ?? date('Y-m-d'),
             'est_lic'    => $_POST['est_lic'] ?? 'S',
+            'fky_fac'    => null,
         ];
+        $numeroFactura = trim($_POST['num_fac_ref'] ?? '');
+
+        if ($datos['id_lic'] <= 0) {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'No se recibio la licencia a modificar.'];
+            break;
+        }
+        if ($datos['num_lic'] === '') {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'Debe indicar el numero de la licencia.'];
+            break;
+        }
+        if ($datos['fky_pat'] <= 0) {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'Debe seleccionar la patente asociada.'];
+            break;
+        }
+
+        $validacionFactura = validarFacturaParaLicencia(
+            $licencia,
+            $facturaModel,
+            $patenteModel,
+            $numeroFactura,
+            $datos['fky_pat'],
+            $datos['id_lic']
+        );
+        if (!$validacionFactura['ok']) {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => $validacionFactura['mensaje']];
+            break;
+        }
 
         if ($licencia->numero_existe($datos['num_lic'], $datos['id_lic'])) {
             $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'El numero de licencia ya esta asignado a otro registro.'];
-        } elseif ($licencia->modificar($datos)) {
+            break;
+        }
+        if ($licencia->existe_activa_para_patente($datos['fky_pat'], $datos['id_lic'])) {
+            $_SESSION['mensaje'] = ['tipo' => 'warning', 'texto' => 'La patente seleccionada ya tiene otra licencia activa.'];
+            break;
+        }
+
+        $datos['fky_fac'] = (int)$validacionFactura['factura']['id_fac'];
+
+        if ($licencia->modificar($datos)) {
             $_SESSION['mensaje'] = ['tipo' => 'success', 'texto' => 'La licencia se modifico correctamente.'];
         } else {
             $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'No se pudo modificar la licencia.'];
@@ -73,7 +198,8 @@ switch ($accion) {
             'Modificacion',
             'Edicion de licencia ID ' . $datos['id_lic'],
             'licencia',
-            $datos['id_lic']
+            $datos['id_lic'],
+            ['patente' => $datos['fky_pat'], 'factura' => $numeroFactura]
         );
         break;
 
@@ -159,12 +285,43 @@ switch ($accion) {
         }
         break;
 
+    case 'validar_factura':
+        $numero = trim($_REQUEST['num_fac_ref'] ?? '');
+        $patenteId = isset($_REQUEST['fky_pat']) ? (int)$_REQUEST['fky_pat'] : 0;
+        $licenciaId = isset($_REQUEST['id_lic']) ? (int)$_REQUEST['id_lic'] : null;
+        $resultado = validarFacturaParaLicencia(
+            $licencia,
+            $facturaModel,
+            $patenteModel,
+            $numero,
+            $patenteId,
+            $licenciaId
+        );
+        if (!$resultado['ok']) {
+            responderJson(['ok' => false, 'mensaje' => $resultado['mensaje']]);
+        }
+        $factura = $resultado['factura'];
+        responderJson([
+            'ok' => true,
+            'factura' => [
+                'id_fac' => (int)$factura['id_fac'],
+                'num_fac' => $factura['num_fac'],
+                'fky_con' => (int)$factura['fky_con'],
+                'nom_con' => $factura['nom_con'] ?? '',
+                'rif_con' => $factura['rif_con'] ?? '',
+                'tot_fac' => (float)$factura['tot_fac'],
+                'fec_fac' => $factura['fec_fac'],
+            ],
+        ]);
+        break;
+
     default:
         header('Location: ../../index.php');
         exit();
 }
 
-if (!in_array($accion, ['login', 'logout'])) {
+if (!in_array($accion, ['login', 'logout', 'validar_factura'], true)) {
     header('Location: ../../Frontend/Vistas/licencias/gestionLicencias.php');
     exit();
 }
+

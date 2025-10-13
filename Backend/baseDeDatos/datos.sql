@@ -1,3 +1,11 @@
+/* Datos de prueba para la tabla rol */
+-- Ajustes de esquema requeridos por los nuevos modulos
+ALTER TABLE factura
+    ADD COLUMN IF NOT EXISTS fec_anulacion DATETIME NULL AFTER est_pago;
+
+ALTER TABLE licencia
+    ADD COLUMN IF NOT EXISTS fky_fac INT NULL AFTER fky_pat;
+
 -- Insertar un usuario 'admin' con clave 'Admin123' encriptada
 
 /* Datos de prueba para la tabla rol */
@@ -92,10 +100,10 @@ INSERT INTO patente (fec_pat, num_pat, rif_pat, nom_pat, fky_con, dir_pat, rub_p
 ('2025-04-18', 'PAT-2025-010', 'J-852963741', 'Telecomunicaciones Movistar', 10, 'Centro Empresarial Polar, Torre Este', 'Telecomunicaciones y Servicios Móviles', 1, 'A', 'A');
 
 /* Datos de prueba para licencias de patentes y sus solvencias comerciales */
-INSERT INTO licencia (num_lic, fky_pat, fec_exp_lic, vig_lic, est_lic, est_registro) VALUES
-('LIC-2025-001', 1, '2025-01-15', '2026-01-15', 'P', 'A'),
-('LIC-2025-002', 2, '2025-01-20', '2026-01-20', 'P', 'A'),
-('LIC-2025-003', 3, '2025-02-10', '2026-02-10', 'P', 'A'),
+INSERT INTO licencia (num_lic, fky_pat, fky_fac, fec_exp_lic, vig_lic, est_lic, est_registro) VALUES
+('LIC-2025-001', 1, NULL, '2025-01-15', '2026-01-15', 'P', 'A'),
+('LIC-2025-002', 2, NULL, '2025-01-20', '2026-01-20', 'P', 'A'),
+('LIC-2025-003', 3, NULL, '2025-02-10', '2026-02-10', 'P', 'A'),
 ('LIC-2025-004', 4, '2025-02-15', '2026-02-15', 'P', 'A'),
 ('LIC-2025-005', 5, '2025-03-01', '2026-03-01', 'P', 'A'),
 ('LIC-2025-006', 6, '2025-03-10', '2026-03-10', 'P', 'A'),

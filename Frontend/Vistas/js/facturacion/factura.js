@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const catalogos = window.catalogosFacturacion || { tipos: [], cedulas: [], solvenciasMunicipales: [], licencias: [], solvenciasComerciales: [] };
+    const catalogos = window.catalogosFacturacion || { tipos: [], cedulas: [], solvenciasMunicipales: [], licencias: [], solvenciasComerciales: [], patentes: [], reportes: {} };
     const form = document.getElementById('facturaForm');
     const accionInput = document.getElementById('formAccionFactura');
     const idInput = document.getElementById('formIdFactura');
@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAgregarDetalle = document.getElementById('btnAgregarDetalle');
     const btnCancelarEdicion = document.getElementById('btnCancelarEdicion');
     const btnGuardar = document.getElementById('btnGuardarFactura');
+    const selectContribuyente = document.getElementById('fky_con');
+    const descripcionInput = document.getElementById('des_fac');
+    const buscadorPatentes = document.getElementById('buscadorPatentes');
+    const tablaPatentes = document.getElementById('tablaPatentesFacturacion');
 
     const entityOptions = [
         { value: 'none', label: 'Sin entidad' },
@@ -187,6 +191,50 @@ document.addEventListener('DOMContentLoaded', () => {
         tablaBody.appendChild(crearFila());
     });
 
+    const asignarPatente = (info) => {
+        if (!info || !selectContribuyente) return;
+        if (info.fky_con) {
+            selectContribuyente.value = info.fky_con;
+        }
+        if (descripcionInput && !descripcionInput.value) {
+            const nombre = info.nom_pat ? `${info.num_pat || ''} - ${info.nom_pat}` : (info.num_pat || '');
+            descripcionInput.value = nombre ? `Factura generada para la patente ${nombre}` : descripcionInput.value;
+        }
+        if (window.Swal) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Patente asignada',
+                text: 'Se asigno el contribuyente de la patente seleccionada al formulario.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    };
+
+    tablaPatentes?.addEventListener('click', (event) => {
+        const btn = event.target.closest('.seleccionar-patente');
+        if (!btn) return;
+        const fila = btn.closest('tr');
+        if (!fila) return;
+        const data = fila.getAttribute('data-patente');
+        if (!data) return;
+        try {
+            const info = JSON.parse(data);
+            asignarPatente(info);
+        } catch (error) {
+            console.error('No se pudo interpretar la informacion de la patente seleccionada', error);
+        }
+    });
+
+    buscadorPatentes?.addEventListener('input', () => {
+        const termino = buscadorPatentes.value.trim().toLowerCase();
+        if (!tablaPatentes) return;
+        tablaPatentes.querySelectorAll('tbody tr').forEach((fila) => {
+            const coincide = fila.textContent.toLowerCase().includes(termino);
+            fila.style.display = coincide ? '' : 'none';
+        });
+    });
+
     btnCancelarEdicion?.addEventListener('click', () => {
         form.reset();
         accionInput.value = 'registrar';
@@ -195,6 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnGuardar.querySelector('span').textContent = 'Registrar Factura';
         limpiarTabla();
         btnCancelarEdicion.hidden = true;
+        buscadorPatentes && (buscadorPatentes.value = '');
+        if (tablaPatentes) {
+            tablaPatentes.querySelectorAll('tbody tr').forEach(fila => fila.style.display = '');
+        }
     });
 
     form?.addEventListener('submit', (event) => {

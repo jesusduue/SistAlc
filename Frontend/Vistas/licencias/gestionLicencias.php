@@ -6,18 +6,38 @@ restringirAcceso('licencias');
 
 require_once '../../../Backend/clases/licencia.php';
 require_once '../../../Backend/clases/patente.php';
+require_once '../../../Backend/clases/Contribuyente.php';
 
 $licenciaModel = new Licencia();
 $patenteModel  = new Patente();
+$contribuyenteModel = new Contribuyente();
 
 $licencias = $licenciaModel->consultar_activas();
 $patentes  = $patenteModel->consultar_todas();
+$contribuyentes = $contribuyenteModel->consultar_todos();
+
+$mapaContribuyentes = [];
+foreach ($contribuyentes as $con) {
+    $mapaContribuyentes[$con['id_con']] = [
+        'nombre' => $con['nom_con'] ?? '',
+        'rif' => $con['rif_con'] ?? '',
+        'direccion' => $con['dir_con'] ?? '',
+    ];
+}
 
 $mapaPatentes = [];
 foreach ($patentes as $pat) {
+    $contribuyenteId = $pat['fky_con'] ?? null;
+    $conInfo = $contribuyenteId && isset($mapaContribuyentes[$contribuyenteId])
+        ? $mapaContribuyentes[$contribuyenteId]
+        : ['nombre' => '', 'rif' => '', 'direccion' => ''];
     $mapaPatentes[$pat['id_pat']] = [
         'numero' => $pat['num_pat'] ?? '',
-        'nombre' => $pat['nom_pat'] ?? ''
+        'nombre' => $pat['nom_pat'] ?? '',
+        'contribuyente' => $conInfo['nombre'],
+        'rif' => $conInfo['rif'],
+        'direccion' => $conInfo['direccion'],
+        'id_con' => $contribuyenteId,
     ];
 }
 ?>
@@ -54,6 +74,11 @@ foreach ($patentes as $pat) {
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+window.catalogosLicencias = {
+    patentes: <?= json_encode($mapaPatentes, JSON_UNESCAPED_UNICODE); ?>
+};
+</script>
 <script src="../js/licencias/modalLicencia.js"></script>
 <script src="../js/licencias/alertLicencia.js"></script>
 

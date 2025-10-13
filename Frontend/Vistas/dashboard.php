@@ -15,21 +15,38 @@ $nombre_rol     = $_SESSION['nom_rol'];
 include 'layouts/sidebarDashboard.php';
 
 // ==========================
-// Placeholders (luego los tomamos de un DashboardController)
+// Datos calculados para el dashboard
 // ==========================
 require_once '../../Backend/clases/dashboard.php';
+require_once '../../Backend/clases/ReporteFinanciero.php';
 
 $dash = new Dashboard();
+$reporteFinanciero = new ReporteFinanciero();
 
-$totalIngresosAnio   = 5742301.00;
-$facturasPendientes  = 124;
-$vencimientosProx30  = 37;
+$anioActual = (int)date('Y');
+$mesActual = (int)date('n');
+$labelsMeses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-$ingresosMensuales = [380000, 420000, 390000, 580000, 460000, 520000, 610000, 570000, 630000, 680000, 720000, 790000];
-$labelsMeses       = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+$indicadores = $reporteFinanciero->indicadoresDashboard($anioActual);
+$ingresosMensuales = $indicadores['ingresosMensuales'] ?? array_fill(0, 12, 0);
+$totalIngresosAnio = $indicadores['ingresosAnuales'] ?? 0.0;
+$facturasPendientes = $indicadores['facturasPendientes'] ?? 0;
+$vencimientosProx30 = $indicadores['vencimientos']['total'] ?? 0;
+$totalAnuladoAnio = $indicadores['anuladoAnual'] ?? 0.0;
 
-$labelsTipos = ['Impuesto Inmobiliario','Patentes Comerciales','Permisos de Construcción','Tasas Municipales','Otros'];
-$valoresTipos = [35, 28, 12, 18, 7];
+$rubrosMesData = $reporteFinanciero->distribucionRubrosMensual($anioActual, $mesActual);
+$labelsTipos = [];
+$valoresTipos = [];
+if (!empty($rubrosMesData['rubros'])) {
+    foreach ($rubrosMesData['rubros'] as $rubro) {
+        $labelsTipos[] = $rubro['nombre'];
+        $valoresTipos[] = $rubro['total'];
+    }
+}
+if (!$labelsTipos) {
+    $labelsTipos = ['Sin datos'];
+    $valoresTipos = [0];
+}
 
 //Actividad Reciente
 $actividadReciente = $dash->actividadesRecientes();
@@ -107,8 +124,9 @@ $actividadReciente = $dash->actividadesRecientes();
                       <i class="fas fa-sack-dollar fa-lg text-primary"></i>
                     </div>
                     <div>
-                        <div class="small text-muted">Ingresos (<?php echo date('Y'); ?>)</div>
+                        <div class="small text-muted">Ingresos netos (<?php echo date('Y'); ?>)</div>
                         <div class="h5 mb-0">Bs. <?php echo number_format($totalIngresosAnio, 2, ',', '.'); ?></div>
+                        <div class="small text-danger">Anulado Bs. <?php echo number_format($totalAnuladoAnio, 2, ',', '.'); ?></div>
                         <a href="#" class="small">Ver reporte completo</a>
                     </div>
                 </div>
