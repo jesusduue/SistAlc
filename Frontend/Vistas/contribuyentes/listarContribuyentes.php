@@ -1,7 +1,7 @@
 <!-- filepath: Frontend/Vistas/contribuyentes/listarContribuyentes.php -->
-<div class="card">
-    <div class="card-header">Listado contribuyentes</div>
-    <div class="card-body table-responsive">
+
+
+    <div class="table-responsive">
         <table class="table table-bordered table-hover" id="tablaContribuyentes">
             <thead class="table-dark">
                 <tr>
@@ -60,5 +60,6 @@
             </tbody>
         </table>
     </div>
-</div>
 
+
+    <script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>

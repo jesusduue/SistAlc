@@ -1,7 +1,7 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+include '../layouts/topbar.php';
 restringirAcceso('licencias');
 
 require_once '../../../Backend/clases/licencia.php';
@@ -41,7 +41,7 @@ foreach ($patentes as $pat) {
     ];
 }
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
 
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
@@ -68,8 +68,7 @@ foreach ($patentes as $pat) {
     <?php include 'listarLicencias.php'; ?>
 </div>
 
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
-<script src="../../estilos/js/bootstrap.min.js"></script>
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>

@@ -12,7 +12,8 @@ if (!isset($_SESSION['nom_usu']) || !isset($_SESSION['nom_rol'])) {
 $nombre_usuario = $_SESSION['nom_usu'];
 $nombre_rol     = $_SESSION['nom_rol'];
 
-include 'layouts/sidebarDashboard.php';
+include 'layouts/topbar.php';
+
 
 // ==========================
 // Datos calculados para el dashboard
@@ -58,13 +59,13 @@ $actividadReciente = $dash->actividadesRecientes();
 <style>
 /* Contenedor principal:
    - En móviles: padding-top estándar.
-   - Desde md: deja espacio a la izquierda para el sidebar fijo. */
+
 .dashboard-wrapper {
   padding-top: 1.25rem;
 }
 @media (min-width: 768px) {
   .dashboard-wrapper {
-    margin-left: 250px; /* coincide con el ancho de tu sidebar */
+    margin-left: 250px; 
   }
 }
 

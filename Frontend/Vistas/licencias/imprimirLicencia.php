@@ -25,7 +25,7 @@ $fechaActual = (new DateTime())->format('d/m/Y');
 <head>
     <meta charset="UTF-8">
     <title>Licencia <?= htmlspecialchars($licencia['num_lic']); ?></title>
-    <link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
     <style>
         body {
             background-color: #f8f9fa;

@@ -1,7 +1,7 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+include '../layouts/topbar.php';
 restringirAcceso('solvencias_comerciales');
 
 require_once '../../../Backend/clases/SolvenciaComercial.php';
@@ -15,7 +15,7 @@ $patentes = $patenteModel->consultar_todas();
 $mapPatentes = [];
 foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . ' - ' . $pat['nom_pat']; }
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
     <h1 class="mb-4">Solvencias comerciales</h1>
 
@@ -141,7 +141,7 @@ foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . '
     </div>
 </div>
 
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalSolvenciaComercial');

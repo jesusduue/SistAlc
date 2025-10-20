@@ -30,7 +30,7 @@ if (isset($_SESSION['mensaje'])) {
     <title>Sistema de Alcaldía</title>
 
     <!-- Bootstrap 5 CSS -->
-    <link href="Frontend/estilos/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/SistAlc/Frontend/estilos/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -116,7 +116,7 @@ if (isset($_SESSION['mensaje'])) {
         });
     </script>
     <!-- Bootstrap 5 JS Bundle (incluye Popper) -->
-    <script src="Frontend/estilos/js/bootstrap.bundle.min.js"></script>
+    <script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
     <script src="Frontend/Vistas/js/validarInicioSesion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

@@ -1,7 +1,7 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+
 restringirAcceso('patentes');
 
 require_once '../../../Backend/clases/Patente.php';
@@ -17,7 +17,9 @@ foreach ($contribuyentes as $con) {
     $mapaContribuyentes[$con['id_con']] = $con['nom_con'];
 }
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+
+<?php include '../layouts/topbar.php'; ?>
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
 
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
@@ -44,14 +46,15 @@ foreach ($contribuyentes as $con) {
     <?php include 'listarPatentes.php'; ?>
 </div>
 
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
-<script src="../../estilos/js/bootstrap.min.js"></script>
+<!-- Bootstrap bundle: ruta root-relative para consistencia -->
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
+<!-- Cargamos scripts en el orden correcto: jQuery -> DataTables -> sweetalert -> scripts locales -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../js/patentes/modalPatente.js"></script>
-<script src="../js/patentes/alertPatente.js"></script>
+<script src="/SistAlc/Frontend/Vistas/js/patentes/modalPatente.js"></script>
+<script src="/SistAlc/Frontend/Vistas/js/patentes/alertPatente.js"></script>
 
 <script>
     $(function() {

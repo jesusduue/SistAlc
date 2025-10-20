@@ -1,14 +1,14 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+include '../layouts/topbar.php';
 restringirAcceso('impuestos');
 
 require_once '../../../Backend/clases/TipoImpuesto.php';
 $tipoImpuesto = new TipoImpuesto();
 $tipos = $tipoImpuesto->consultar_todos();
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
     <h1 class="mb-4">Tipos de Impuesto</h1>
 
@@ -105,5 +105,5 @@ $tipos = $tipoImpuesto->consultar_todos();
     </div>
 </div>
 
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script src="../js/impuestos/modalTipoImpuesto.js"></script>

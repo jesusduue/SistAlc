@@ -1,14 +1,14 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+include '../layouts/topbar.php';
 restringirAcceso('documentos_catastro');
 
 require_once '../../../Backend/clases/DocumentoLegal.php';
 $documentoLegal = new DocumentoLegal();
 $documentos = $documentoLegal->consultar_todos();
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
     <h1 class="mb-4">Documentos legales</h1>
 
@@ -133,7 +133,7 @@ $documentos = $documentoLegal->consultar_todos();
     </div>
 </div>
 
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalDocumento');

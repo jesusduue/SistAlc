@@ -1,7 +1,7 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+include '../layouts/topbar.php';
 restringirAcceso('facturacion');
 
 require_once '../../../Backend/clases/Factura.php';
@@ -70,7 +70,7 @@ $resumenRubrosDia = $reporteFinanciero->resumenDiarioRubros($hoy);
 $indicadoresFinancieros = $reporteFinanciero->indicadoresDashboard((int)date('Y'));
 $rubrosMesActual = $reporteFinanciero->distribucionRubrosMensual((int)date('Y'), (int)date('n'));
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
     <h1 class="mb-4">Gestion de Facturas</h1>
 
@@ -414,6 +414,6 @@ window.catalogosFacturacion = {
     }
 };
 </script>
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script src="../js/facturacion/factura.js"></script>
 <script src="../js/facturacion/reportesFacturacion.js"></script>

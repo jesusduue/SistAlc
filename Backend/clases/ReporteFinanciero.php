@@ -171,13 +171,18 @@ class ReporteFinanciero extends Utilidad
         $anio = $anio > 0 ? $anio : (int)date('Y');
         $base = array_fill(1, 12, 0.0);
 
-        $sqlPagado = "SELECT MONTH(f.fec_fac) AS mes, SUM(f.tot_fac) AS total
-                        FROM factura f
-                       WHERE f.est_registro = 'A'
-                         AND f.est_pago = 'P'
-                         AND YEAR(f.fec_fac) = ?
-                    GROUP BY mes";
+ $sqlPagado = "SELECT MONTH(f.fec_fac) AS mes, SUM(f.tot_fac) AS total
+                    FROM factura f
+                   WHERE f.est_registro = 'A'
+                     AND f.est_pago = 'P'
+                     AND YEAR(f.fec_fac) = ?
+                GROUP BY MONTH(f.fec_fac)";
         $stmt = $this->con_bd->prepare($sqlPagado);
+        if (!$stmt) {
+            error_log('ReporteFinanciero::ingresosMensuales prepare(sqlPagado) failed: ' . $this->con_bd->error . ' SQL: ' . $sqlPagado);
+            // Devuelve ceros si la consulta falla para que la vista no provoque un fatal
+            return array_values(array_map(static function ($value) { return round($value, 2); }, $base));
+        }
         $stmt->bind_param('i', $anio);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -189,13 +194,18 @@ class ReporteFinanciero extends Utilidad
         $stmt->close();
 
         $sqlAnulado = "SELECT MONTH(f.fec_anulacion) AS mes, SUM(f.tot_fac) AS total
-                         FROM factura f
-                        WHERE f.est_registro = 'A'
-                          AND f.est_pago = 'A'
-                          AND f.fec_anulacion IS NOT NULL
-                          AND YEAR(f.fec_anulacion) = ?
-                     GROUP BY mes";
+                     FROM factura f
+                    WHERE f.est_registro = 'A'
+                      AND f.est_pago = 'A'
+                      AND f.fec_anulacion IS NOT NULL
+                      AND YEAR(f.fec_anulacion) = ?
+                 GROUP BY MONTH(f.fec_anulacion)";
+
         $stmt = $this->con_bd->prepare($sqlAnulado);
+        if (!$stmt) {
+            error_log('ReporteFinanciero::ingresosMensuales prepare(sqlAnulado) failed: ' . $this->con_bd->error . ' SQL: ' . $sqlAnulado);
+            return array_values(array_map(static function ($value) { return round($value, 2); }, $base));
+        }
         $stmt->bind_param('i', $anio);
         $stmt->execute();
         $res = $stmt->get_result();

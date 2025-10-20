@@ -1,7 +1,7 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/sidebar.php';
+include '../layouts/topbar.php';
 restringirAcceso('cedulas');
 
 require_once '../../../Backend/clases/CedulaCatastral.php';
@@ -31,7 +31,7 @@ foreach ($linderos as $item) { $mapLinderos[$item['id_lin']] = $item['lin_norte'
 $mapDocumentos = [];
 foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_doc']; }
 ?>
-<link rel="stylesheet" href="../../estilos/css/bootstrap.min.css">
+<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
     <h1 class="mb-4">Cedulas catastrales</h1>
 
@@ -210,7 +210,7 @@ foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_do
     </div>
 </div>
 
-<script src="../../estilos/js/bootstrap.bundle.min.js"></script>
+<script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalCedula');
