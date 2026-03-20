@@ -1,16 +1,27 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('documentos_catastro');
 
 require_once '../../../Backend/clases/DocumentoLegal.php';
 $documentoLegal = new DocumentoLegal();
 $documentos = $documentoLegal->consultar_todos();
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
-    <h1 class="mb-4">Documentos legales</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/catastro/gestion_documentos.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page documentos-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Documentos legales</h1>
+            <p class="alc-page-subtitle">Resguardo de soportes juridicos asociados a inmuebles y cedulas catastrales.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDocumento">
+                <i class="fas fa-file-circle-plus me-2"></i>Nuevo documento
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -20,15 +31,11 @@ $documentos = $documentoLegal->consultar_todos();
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalDocumento">
-        <i class="fas fa-plus"></i> Nuevo documento
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de documentos</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Tipo</th>
@@ -52,11 +59,11 @@ $documentos = $documentoLegal->consultar_todos();
                             <td><?= htmlspecialchars($doc['fec_doc']); ?></td>
                             <td><?= htmlspecialchars($doc['des_doc']); ?></td>
                             <td>
-                                <span class="badge bg-<?= ($doc['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($doc['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($doc['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
-                            <td class="d-flex gap-2">
+                            <td class="d-flex gap-2 flex-wrap">
                                 <button type="button" class="btn btn-sm btn-warning"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalDocumento"
@@ -79,7 +86,7 @@ $documentos = $documentoLegal->consultar_todos();
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalDocumento" tabindex="-1" aria-hidden="true">
@@ -157,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             idInput.value = button.dataset.id;
             Object.keys(campos).forEach(campo => {
                 const elemento = document.getElementById(campo);
-                elemento.value = button.dataset[campo.replace('doc','doc')] || button.dataset[campo.replace('doc','doc')] || button.dataset[campo] || campos[campo];
+                elemento.value = button.dataset[campo] || campos[campo];
             });
             document.getElementById('tip_doc').value = button.dataset.tip || 'Registrado';
             document.getElementById('num_doc').value = button.dataset.num || '';
@@ -179,4 +186,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-

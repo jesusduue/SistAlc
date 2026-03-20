@@ -1,75 +1,98 @@
-<?php require_once __DIR__ . '/paths.php';
-$paginaActual = basename($_SERVER['PHP_SELF']);?>
+<?php
+require_once __DIR__ . '/paths.php';
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center" href="<?= BASE_URL ?>/Vistas/dashboard.php">
-            <i class="fas fa-landmark fa-lg me-2 text-primary"></i>
-            <span class="fs-5 fw-semibold">Alcaldia</span>
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+
+$isDashboard = str_contains($requestUri, '/Vistas/dashboard.php');
+$isUsuarios = str_contains($requestUri, '/Vistas/usuarios/');
+$isContribuyentes = str_contains($requestUri, '/Vistas/contribuyentes/');
+$isCatastro = str_contains($requestUri, '/Vistas/catastro/');
+$isPatentes = str_contains($requestUri, '/Vistas/patentes/');
+$isLicencias = str_contains($requestUri, '/Vistas/licencias/');
+$isComercio = str_contains($requestUri, '/Vistas/comercio/');
+$isFacturacion = str_contains($requestUri, '/Vistas/facturacion/');
+$isImpuestos = str_contains($requestUri, '/Vistas/impuestos/');
+
+$catastroActivo = $isContribuyentes || $isCatastro;
+$patentesActivo = $isPatentes || $isLicencias || $isComercio;
+$facturacionActivo = $isFacturacion || $isImpuestos;
+?>
+<nav class="navbar navbar-expand-xl alc-topbar sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+        <a class="navbar-brand alc-brand" href="<?= BASE_URL ?>/Vistas/dashboard.php">
+            <span class="alc-brand-icon"><i class="fas fa-landmark"></i></span>
+            <span class="alc-brand-copy">
+                <span class="alc-brand-title">Alcaldia</span>
+                <span class="alc-brand-subtitle">Sistema integral municipal</span>
+            </span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+
+        <button class="navbar-toggler alc-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#alcTopbarNav" aria-controls="alcTopbarNav" aria-expanded="false" aria-label="Alternar navegacion">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                    <?php if ($paginaActual == 'dashboard.php'): ?>
-                        <a class="nav-link active" aria-current="page" href="#"><i class="fas fa-home me-2"></i>Inicio</a>
-                    <?php else: ?>
-                        <a class="nav-link" href="../dashboard.php"><i class="fas fa-home me-2"></i>Inicio</a>
-                    <?php endif; ?>
+
+        <div class="collapse navbar-collapse" id="alcTopbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-xl-0 alc-topbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link <?= $isDashboard ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/dashboard.php"><i class="fas fa-house"></i><span>Inicio</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php"><i class="fas fa-users-cog me-2"></i>Usuarios</a>
+                    <a class="nav-link <?= $isUsuarios ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php"><i class="fas fa-users-cog"></i><span>Usuarios</span></a>
                 </li>
+
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="catastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-map me-2"></i> Catastro
+                    <a class="nav-link dropdown-toggle <?= $catastroActivo ? 'active' : ''; ?>" href="#" id="catastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-map-location-dot"></i><span>Catastro</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="catastroDropdown">
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/contribuyentes/gestion_contribuyentes.php"><i class="fas fa-id-card me-2"></i>Contribuyentes</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/catastro/gestion_inmuebles.php"><i class="fas fa-house me-2"></i>Inmuebles</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/catastro/gestion_linderos.php"><i class="fas fa-border-style me-2"></i>Linderos</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/catastro/gestion_documentos.php"><i class="fas fa-file-contract me-2"></i>Documentos</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/catastro/gestion_cedulas.php"><i class="fas fa-map me-2"></i>Cedulas</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/catastro/gestion_solvencias_municipales.php"><i class="fas fa-scroll me-2"></i>Solvencias municipales</a></li>
+                        <li><a class="dropdown-item <?= $isContribuyentes ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/contribuyentes/gestion_contribuyentes.php"><i class="fas fa-id-card"></i>Contribuyentes</a></li>
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/gestion_inmuebles.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/catastro/gestion_inmuebles.php"><i class="fas fa-house"></i>Inmuebles</a></li>
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/gestion_linderos.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/catastro/gestion_linderos.php"><i class="fas fa-border-all"></i>Linderos</a></li>
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/gestion_documentos.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/catastro/gestion_documentos.php"><i class="fas fa-file-contract"></i>Documentos</a></li>
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/gestion_cedulas.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/catastro/gestion_cedulas.php"><i class="fas fa-file-signature"></i>Cedulas</a></li>
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/gestion_solvencias_municipales.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/catastro/gestion_solvencias_municipales.php"><i class="fas fa-scroll"></i>Solvencias municipales</a></li>
                     </ul>
                 </li>
+
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="patentesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-building me-2"></i> Patentes
+                    <a class="nav-link dropdown-toggle <?= $patentesActivo ? 'active' : ''; ?>" href="#" id="patentesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-building"></i><span>Comercio</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="patentesDropdown">
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/patentes/gestionPatentes.php"><i class="fas fa-building me-2"></i>Patentes</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/licencias/gestionLicencias.php"><i class="fas fa-id-badge me-2"></i>Licencias</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/comercio/gestion_solvencias_comerciales.php"><i class="fas fa-store me-2"></i>Solvencias comerciales</a></li>
+                        <li><a class="dropdown-item <?= $isPatentes ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/patentes/gestionPatentes.php"><i class="fas fa-certificate"></i>Patentes</a></li>
+                        <li><a class="dropdown-item <?= $isLicencias ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/licencias/gestionLicencias.php"><i class="fas fa-id-badge"></i>Licencias</a></li>
+                        <li><a class="dropdown-item <?= $isComercio ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/comercio/gestion_solvencias_comerciales.php"><i class="fas fa-store"></i>Solvencias comerciales</a></li>
                     </ul>
                 </li>
+
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="facturacionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-file-invoice-dollar me-2"></i> Facturación
+                    <a class="nav-link dropdown-toggle <?= $facturacionActivo ? 'active' : ''; ?>" href="#" id="facturacionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-file-invoice-dollar"></i><span>Facturacion</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="facturacionDropdown">
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/facturacion/gestion_facturas.php"><i class="fas fa-file-invoice-dollar me-2"></i>Facturación</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/facturacion/reporte_ingresos.php"><i class="fas fa-chart-line me-2"></i>Reporte de ingresos</a></li>
-                        <!-- <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/impuestos/gestion_tipo_impuesto.php"><i class="fas fa-percent me-2"></i>Tipos de impuesto</a></li> -->
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/gestion_facturas.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/facturacion/gestion_facturas.php"><i class="fas fa-file-invoice"></i>Gestion de facturas</a></li>
+                        <li><a class="dropdown-item <?= str_contains($requestUri, '/reporte_ingresos.php') ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/facturacion/reporte_ingresos.php"><i class="fas fa-chart-line"></i>Reporte de ingresos</a></li>
+                        <li><a class="dropdown-item <?= $isImpuestos ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/impuestos/gestion_tipo_impuesto.php"><i class="fas fa-percent"></i>Tipos de impuesto</a></li>
                     </ul>
                 </li>
             </ul>
-            
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"></li>
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
-                        <i class="fas fa-user-circle me-2"></i><?= htmlspecialchars($_SESSION['nom_usu'] ?? ''); ?> (<?= htmlspecialchars($_SESSION['nom_rol'] ?? ''); ?>)
-                    </a>
-                </ul>
-            <form action="<?= BACKEND_URL ?>/controlador/UsuarioController.php" method="POST" class="d-flex">
-                <input type="hidden" name="accion" value="logout">
-                <button class="btn btn-outline-danger" type="submit">
-                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
-                </button>
-            </form>
+
+            <div class="alc-user-panel">
+                <div class="alc-user-chip" title="Usuario autenticado">
+                    <i class="fas fa-user-shield"></i>
+                    <span>
+                        <strong><?= htmlspecialchars($_SESSION['nom_usu'] ?? ''); ?></strong>
+                        <small><?= htmlspecialchars($_SESSION['nom_rol'] ?? ''); ?></small>
+                    </span>
+                </div>
+                <form action="<?= BACKEND_URL ?>/controlador/UsuarioController.php" method="POST" class="m-0">
+                    <input type="hidden" name="accion" value="logout">
+                    <button class="btn alc-btn-logout" type="submit">
+                        <i class="fas fa-right-from-bracket"></i>
+                        <span>Salir</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </nav>
-

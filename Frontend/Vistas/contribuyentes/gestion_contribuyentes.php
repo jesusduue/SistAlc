@@ -1,19 +1,28 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('contribuyentes');
 
 require_once '../../../Backend/clases/Contribuyente.php';
 $contribuyente = new Contribuyente();
 $contribuyentes = $contribuyente->consultar_activos();
 ?>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/contribuyentes/gestion_contribuyentes.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<?php include '../layouts/topbar.php'; ?>
 
-<!-- CSS DataTables (se puede cargar aquí porque bootstrap.css ya viene en el header) -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
-
-<div class="container-fluid" style=" padding-top: 2rem; margin-left: 0;">
-    <h1 class="mb-4">Gestión de Contribuyentes</h1>
+<main class="container-fluid alc-page contribuyentes-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center contribuyentes-hero">
+        <div>
+            <h1 class="alc-page-title">Gestion de contribuyentes</h1>
+            <p class="alc-page-subtitle">Consolida y depura la base de contribuyentes para procesos catastrales y comerciales.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalContribuyente">
+                <i class="fas fa-user-plus me-2"></i>Agregar contribuyente
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?php echo $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -23,26 +32,27 @@ $contribuyentes = $contribuyente->consultar_activos();
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalContribuyente">
-        <i class="fas fa-user-plus"></i> Agregar Contribuyente
-    </button>
-
     <?php include 'modalRegistrarActualizarContribuyente.php'; ?>
 
-    <div class="mb-3">
-        <input type="text" id="buscador" class="form-control" placeholder="Buscar contribuyente...">
-    </div>
+    <section class="card alc-panel mb-3">
+        <div class="card-body">
+            <label for="buscador" class="form-label fw-semibold mb-2">Busqueda rapida</label>
+            <input type="text" id="buscador" class="form-control" placeholder="Buscar por nombre, RIF, telefono o direccion...">
+        </div>
+    </section>
 
-    <?php include 'listarContribuyentes.php'; ?>
-</div>
-
-<?php /* footer incluido por layouts */ ?>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de contribuyentes</div>
+        <div class="card-body">
+            <?php include 'listarContribuyentes.php'; ?>
+        </div>
+    </section>
+</main>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="../js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script src="/SistAlc/Frontend/Vistas/js/contribuyentes/modalContribuyente.js"></script>
 <script src="/SistAlc/Frontend/Vistas/js/contribuyentes/alertContribuyente.js"></script>
 
@@ -57,7 +67,7 @@ $contribuyentes = $contribuyente->consultar_activos();
             info: true,
             autoWidth: false,
             language: {
-                paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' },
+                paginate: { first: 'Primero', last: 'Ultimo', next: 'Siguiente', previous: 'Anterior' },
                 info: 'Mostrando _START_ a _END_ de _TOTAL_ contribuyentes',
                 infoEmpty: 'Mostrando 0 a 0 de 0 contribuyentes',
                 infoFiltered: '(filtrado de _MAX_ contribuyentes totales)',
@@ -73,3 +83,4 @@ $contribuyentes = $contribuyente->consultar_activos();
     });
 </script>
 
+<?php include '../layouts/footer.php'; ?>

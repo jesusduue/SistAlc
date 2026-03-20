@@ -1,7 +1,6 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('solvencias_comerciales');
 
 require_once '../../../Backend/clases/SolvenciaComercial.php';
@@ -15,9 +14,21 @@ $patentes = $patenteModel->consultar_todas();
 $mapPatentes = [];
 foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . ' - ' . $pat['nom_pat']; }
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="padding-top: 2rem;">
-    <h1 class="mb-4">Solvencias comerciales</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/comercio/gestion_solvencias_comerciales.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page solvencias-comerciales-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Solvencias comerciales</h1>
+            <p class="alc-page-subtitle">Seguimiento de solvencias emitidas para actividades economicas con patente vigente.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolvenciaComercial">
+                <i class="fas fa-plus me-2"></i>Nueva solvencia comercial
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -27,15 +38,11 @@ foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . '
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalSolvenciaComercial">
-        <i class="fas fa-plus"></i> Nueva solvencia comercial
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de solvencias comerciales</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>Numero</th>
                         <th>Patente</th>
@@ -49,14 +56,15 @@ foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . '
                 <tbody>
                     <?php $labels = ['S' => 'Solicitada', 'P' => 'Pagada', 'V' => 'Vencida']; ?>
                     <?php foreach ($solvencias as $sol): ?>
+                        <?php $statusClass = ['S' => 'status-s', 'P' => 'status-p', 'V' => 'status-v'][$sol['est_sol_com']] ?? 'status-s'; ?>
                         <tr>
                             <td><?= htmlspecialchars($sol['num_sol_com']); ?></td>
                             <td><?= htmlspecialchars($mapPatentes[$sol['fky_pat']] ?? 'N/D'); ?></td>
                             <td><?= htmlspecialchars($sol['fec_exp_sol_com']); ?></td>
                             <td><?= htmlspecialchars($sol['vig_sol_com']); ?></td>
-                            <td><span class="badge bg-info"><?= $labels[$sol['est_sol_com']] ?? 'Desconocido'; ?></span></td>
+                            <td><span class="badge status-chip <?= $statusClass; ?>"><?= $labels[$sol['est_sol_com']] ?? 'Desconocido'; ?></span></td>
                             <td>
-                                <span class="badge bg-<?= ($sol['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($sol['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($sol['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
@@ -86,7 +94,7 @@ foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . '
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalSolvenciaComercial" tabindex="-1" aria-hidden="true">

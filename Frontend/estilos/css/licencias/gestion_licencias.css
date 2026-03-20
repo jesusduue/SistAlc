@@ -1,0 +1,44 @@
+.licencias-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.15), rgba(255, 255, 255, 0.88)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.7));
+}
+
+.licencias-page #buscadorLicencia {
+  border-left: 4px solid #7f1d1d;
+}
+
+.licencias-page #tablaLicencias td:last-child {
+  min-width: 275px;
+}
+
+.licencias-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.licencias-page .dropdown-menu {
+  border-radius: 10px;
+}
+
+.licencias-page .dropdown-item {
+  font-weight: 600;
+}
+
+.licencias-page .dropdown-item:hover {
+  background-color: rgba(127, 29, 29, 0.09);
+  color: #7f1d1d;
+}
+
+.licencias-page #infoFacturaSeleccionada {
+  border-left: 3px solid rgba(127, 29, 29, 0.4);
+  padding-left: 0.55rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 1200px) {
+  .licencias-page #tablaLicencias {
+    min-width: 1320px;
+  }
+}

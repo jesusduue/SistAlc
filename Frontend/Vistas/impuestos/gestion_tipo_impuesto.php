@@ -1,16 +1,27 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('impuestos');
 
 require_once '../../../Backend/clases/TipoImpuesto.php';
 $tipoImpuesto = new TipoImpuesto();
 $tipos = $tipoImpuesto->consultar_todos();
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
-    <h1 class="mb-4">Tipos de Impuesto</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/impuestos/gestion_tipo_impuesto.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page impuestos-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Tipos de impuesto</h1>
+            <p class="alc-page-subtitle">Catalogo tributario base para la construccion de facturas y reportes financieros.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTipoImpuesto">
+                <i class="fas fa-plus me-2"></i>Nuevo tipo de impuesto
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -20,15 +31,11 @@ $tipos = $tipoImpuesto->consultar_todos();
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTipoImpuesto">
-        <i class="fas fa-plus"></i> Nuevo Tipo de Impuesto
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de tipos de impuesto</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Nombre</th>
@@ -44,11 +51,11 @@ $tipos = $tipoImpuesto->consultar_todos();
                             <td><?= htmlspecialchars($tip['nom_tip']); ?></td>
                             <td><?= htmlspecialchars($tip['des_tip']); ?></td>
                             <td>
-                                <span class="badge bg-<?= ($tip['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($tip['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($tip['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
-                            <td class="d-flex gap-2">
+                            <td class="d-flex gap-2 flex-wrap">
                                 <button
                                     type="button"
                                     class="btn btn-sm btn-warning"
@@ -71,7 +78,7 @@ $tipos = $tipoImpuesto->consultar_todos();
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalTipoImpuesto" tabindex="-1" aria-hidden="true">

@@ -1,0 +1,29 @@
+.inmuebles-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.13), rgba(255, 255, 255, 0.9)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.7));
+}
+
+.inmuebles-page .table td:nth-child(2) {
+  min-width: 260px;
+}
+
+.inmuebles-page .table td:nth-child(6) {
+  min-width: 140px;
+}
+
+.inmuebles-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.inmuebles-page .modal textarea {
+  min-height: 90px;
+}
+
+@media (max-width: 992px) {
+  .inmuebles-page .table {
+    min-width: 820px;
+  }
+}

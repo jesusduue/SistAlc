@@ -1,0 +1,39 @@
+.patentes-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.16), rgba(255, 255, 255, 0.88)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.74));
+}
+
+.patentes-page #buscador {
+  border-left: 4px solid #7f1d1d;
+}
+
+.patentes-page #tablaPatentes td:nth-child(5),
+.patentes-page #tablaPatentes td:nth-child(7),
+.patentes-page #tablaPatentes td:nth-child(8) {
+  white-space: normal;
+}
+
+.patentes-page #tablaPatentes td:last-child {
+  min-width: 200px;
+}
+
+.patentes-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.patentes-page .modal-dialog {
+  max-width: 900px;
+}
+
+.patentes-page #buscarRepresentante {
+  border-left: 3px solid rgba(127, 29, 29, 0.35);
+}
+
+@media (max-width: 1200px) {
+  .patentes-page #tablaPatentes {
+    min-width: 1320px;
+  }
+}

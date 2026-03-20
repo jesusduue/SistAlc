@@ -1,0 +1,30 @@
+.documentos-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.11), rgba(255, 255, 255, 0.93)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.92), rgba(231, 229, 228, 0.75));
+}
+
+.documentos-page .table td:nth-child(7) {
+  max-width: 260px;
+  white-space: normal;
+}
+
+.documentos-page .table td:last-child {
+  min-width: 145px;
+}
+
+.documentos-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.documentos-page .modal textarea {
+  min-height: 96px;
+}
+
+@media (max-width: 1200px) {
+  .documentos-page .table {
+    min-width: 1140px;
+  }
+}

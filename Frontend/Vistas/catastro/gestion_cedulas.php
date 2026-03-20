@@ -1,7 +1,6 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('cedulas');
 
 require_once '../../../Backend/clases/CedulaCatastral.php';
@@ -31,9 +30,21 @@ foreach ($linderos as $item) { $mapLinderos[$item['id_lin']] = $item['lin_norte'
 $mapDocumentos = [];
 foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_doc']; }
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
-    <h1 class="mb-4">Cedulas catastrales</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/catastro/gestion_cedulas.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page cedulas-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Cedulas catastrales</h1>
+            <p class="alc-page-subtitle">Emision y seguimiento de cedulas con control de vigencia y estado de tramite.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCedula">
+                <i class="fas fa-plus me-2"></i>Nueva cedula
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -43,15 +54,11 @@ foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_do
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCedula">
-        <i class="fas fa-plus"></i> Nueva cedula
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de cedulas</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>Numero</th>
                         <th>Contribuyente</th>
@@ -65,6 +72,10 @@ foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_do
                 </thead>
                 <tbody>
                     <?php foreach ($cedulas as $ced): ?>
+                        <?php
+                        $labels = ['S' => 'Solicitada', 'P' => 'Pagada', 'V' => 'Vencida'];
+                        $statusClass = ['S' => 'status-s', 'P' => 'status-p', 'V' => 'status-v'][$ced['est_ced']] ?? 'status-s';
+                        ?>
                         <tr>
                             <td><?= htmlspecialchars($ced['num_ced']); ?></td>
                             <td><?= htmlspecialchars($mapContribuyentes[$ced['fky_con']] ?? 'N/D'); ?></td>
@@ -72,13 +83,12 @@ foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_do
                             <td><?= number_format((float)$ced['val_ced'], 2, ',', '.'); ?></td>
                             <td><?= htmlspecialchars($ced['vig_ced']); ?></td>
                             <td>
-                                <?php $labels = ['S' => 'Solicitada', 'P' => 'Pagada', 'V' => 'Vencida']; ?>
-                                <span class="badge bg-info">
+                                <span class="badge status-chip <?= $statusClass; ?>">
                                     <?= $labels[$ced['est_ced']] ?? 'Desconocido'; ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="badge bg-<?= ($ced['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($ced['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($ced['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
@@ -114,7 +124,7 @@ foreach ($documentos as $item) { $mapDocumentos[$item['id_doc']] = $item['num_do
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalCedula" tabindex="-1" aria-hidden="true">

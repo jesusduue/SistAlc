@@ -1,0 +1,33 @@
+.solvencias-comerciales-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.16), rgba(255, 255, 255, 0.88)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.72));
+}
+
+.solvencias-comerciales-page .table td:nth-child(2) {
+  min-width: 240px;
+}
+
+.solvencias-comerciales-page .table td:last-child {
+  min-width: 210px;
+}
+
+.solvencias-comerciales-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.solvencias-comerciales-page .btn-group .btn-outline-success:hover {
+  background-color: #16a34a;
+}
+
+.solvencias-comerciales-page .btn-group .btn-outline-danger:hover {
+  background-color: #dc2626;
+}
+
+@media (max-width: 1200px) {
+  .solvencias-comerciales-page .table {
+    min-width: 1140px;
+  }
+}

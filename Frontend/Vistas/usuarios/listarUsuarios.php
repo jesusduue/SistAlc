@@ -1,6 +1,6 @@
     
     
-    <div class="card">
+    <div class="card alc-panel">
         <div class="card-header">Listado de Usuarios</div>
         <div class="card-body table-responsive">
             <table class="table table-bordered table-hover">
@@ -20,7 +20,7 @@
                             <td><?php echo htmlspecialchars($usu['nom_usu']); ?></td>
                             <td><?php echo htmlspecialchars($usu['nom_rol']); ?></td>
                             <td>
-                                <span class="badge bg-<?php echo ($usu['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?php echo ($usu['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?php echo htmlspecialchars($usu['estado_descripcion']); ?>
                                 </span>
                             </td>

@@ -1,16 +1,27 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('linderos');
 
 require_once '../../../Backend/clases/Linderos.php';
 $linderosModel = new Linderos();
 $linderos = $linderosModel->consultar_todos();
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
-    <h1 class="mb-4">Linderos</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/catastro/gestion_linderos.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page linderos-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Gestion de linderos</h1>
+            <p class="alc-page-subtitle">Control de referencias geograficas y metraje por colindancia.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLinderos">
+                <i class="fas fa-plus me-2"></i>Nuevo registro
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -20,15 +31,11 @@ $linderos = $linderosModel->consultar_todos();
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalLinderos">
-        <i class="fas fa-plus"></i> Nuevo registro de linderos
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de linderos</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Norte</th>
@@ -50,11 +57,11 @@ $linderos = $linderosModel->consultar_todos();
                             <td><?= htmlspecialchars($lin['lin_oeste']); ?> (<?= htmlspecialchars($lin['mt2_oeste']); ?> m2)</td>
                             <td><?= htmlspecialchars($lin['mt2_total']); ?></td>
                             <td>
-                                <span class="badge bg-<?= ($lin['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($lin['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($lin['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
-                            <td class="d-flex gap-2">
+                            <td class="d-flex gap-2 flex-wrap">
                                 <button type="button" class="btn btn-sm btn-warning"
                                         data-bs-toggle="modal"
                                         data-bs-target="#modalLinderos"
@@ -80,7 +87,7 @@ $linderos = $linderosModel->consultar_todos();
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalLinderos" tabindex="-1" aria-hidden="true">

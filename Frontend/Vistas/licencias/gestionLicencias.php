@@ -1,7 +1,6 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('licencias');
 
 require_once '../../../Backend/clases/licencia.php';
@@ -41,11 +40,22 @@ foreach ($patentes as $pat) {
     ];
 }
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/licencias/gestion_licencias.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<?php include '../layouts/topbar.php'; ?>
 
-<div class="container-fluid" style="padding-top: 2rem;">
-    <h1 class="mb-4">Gestión de Licencias</h1>
+<div class="container-fluid alc-page licencias-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Gestion de licencias</h1>
+            <p class="alc-page-subtitle">Emision, validacion y seguimiento de licencias comerciales.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLicencia">
+                <i class="fas fa-id-badge me-2"></i>Registrar licencia
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?php echo $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -55,15 +65,14 @@ foreach ($patentes as $pat) {
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalLicencia">
-        <i class="fas fa-id-badge"></i> Registrar Licencia
-    </button>
-
     <?php include 'modalRegistrarActualizarLicencia.php'; ?>
 
-    <div class="mb-3">
-        <input type="text" id="buscadorLicencia" class="form-control" placeholder="Buscar licencia...">
-    </div>
+    <section class="card alc-panel mb-3">
+        <div class="card-body">
+            <label for="buscadorLicencia" class="form-label fw-semibold mb-2">Busqueda rapida</label>
+            <input type="text" id="buscadorLicencia" class="form-control" placeholder="Buscar por licencia, patente, factura o estado...">
+        </div>
+    </section>
 
     <?php include 'listarLicencias.php'; ?>
 </div>
@@ -94,7 +103,7 @@ window.catalogosLicencias = {
             language: {
                 paginate: {
                     first: 'Primero',
-                    last: 'Último',
+                    last: 'Ultimo',
                     next: 'Siguiente',
                     previous: 'Anterior'
                 },
@@ -112,5 +121,3 @@ window.catalogosLicencias = {
         });
     });
 </script>
-
-

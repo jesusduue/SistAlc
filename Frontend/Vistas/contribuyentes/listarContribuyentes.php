@@ -3,7 +3,7 @@
 
     <div class="table-responsive">
         <table class="table table-bordered table-hover" id="tablaContribuyentes">
-            <thead class="table-dark">
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre o Comercio</th>
@@ -60,6 +60,3 @@
             </tbody>
         </table>
     </div>
-
-
-    <script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>

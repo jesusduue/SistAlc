@@ -1,40 +1,43 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light border-end vh-100" style="width: 250px; position: fixed;">
-    <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-        <i class="fas fa-landmark fa-lg me-2 text-primary"></i>
-        <span class="fs-5 fw-semibold">Alcaldia</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-            <a href="../dashboard.php" class="nav-link text-dark">
-                <i class="fas fa-home me-2"></i> Inicio
-            </a>
-        </li>
-        <li><a href="../usuarios/gestion_usuarios.php" class="nav-link text-dark"><i class="fas fa-users-cog me-2"></i> Usuarios</a></li>
-        <li class="mt-3 text-muted fw-semibold">Catastro</li>
-        <li><a href="../contribuyentes/gestion_contribuyentes.php" class="nav-link text-dark"><i class="fas fa-id-card me-2"></i> Contribuyentes</a></li>
-        <li><a href="../catastro/gestion_inmuebles.php" class="nav-link text-dark"><i class="fas fa-house me-2"></i> Inmuebles</a></li>
-        <li><a href="../catastro/gestion_linderos.php" class="nav-link text-dark"><i class="fas fa-border-style me-2"></i> Linderos</a></li>
-        <li><a href="../catastro/gestion_documentos.php" class="nav-link text-dark"><i class="fas fa-file-contract me-2"></i> Documentos</a></li>
-        <li><a href="../catastro/gestion_cedulas.php" class="nav-link text-dark"><i class="fas fa-map me-2"></i> Cedulas</a></li>
-        <li><a href="../catastro/gestion_solvencias_municipales.php" class="nav-link text-dark"><i class="fas fa-scroll me-2"></i> Solvencias municipales</a></li>
-        <li class="mt-3 text-muted fw-semibold">Patentes</li>
-        <li><a href="../patentes/gestionPatentes.php" class="nav-link text-dark"><i class="fas fa-building me-2"></i> Patentes</a></li>
-        <li><a href="../licencias/gestionLicencias.php" class="nav-link text-dark"><i class="fas fa-id-badge me-2"></i> Licencias</a></li>
-        <li><a href="../comercio/gestion_solvencias_comerciales.php" class="nav-link text-dark"><i class="fas fa-store me-2"></i> Solvencias comerciales</a></li>
-        <li class="mt-3 text-muted fw-semibold">Facturacion</li>
-        <li><a href="../facturacion/gestion_facturas.php" class="nav-link text-dark"><i class="fas fa-file-invoice-dollar me-2"></i> Facturacion</a></li>
-        <!-- ver reportes de ingresos diarios -->
-        <li><a href="../reportes/ingresos_diarios.php" class="nav-link text-dark"><i class="fas fa-chart-line me-2"></i> Ingresos diarios</a></li>
-        <!-- ver reportes de ingresos por rubros -->
-        <li><a href="../reportes/ingresos_por_rubros.php" class="nav-link text-dark"><i class="fas fa-chart-pie me-2"></i> Ingresos por rubros</a></li>
-        <li><a href="../impuestos/gestion_tipo_impuesto.php" class="nav-link text-dark"><i class="fas fa-percent me-2"></i> Tipos de impuesto</a></li>
-    </ul>
-    <hr>
-    <form action="../../../Backend/controlador/UsuarioController.php" method="POST">
-        <input type="hidden" name="accion" value="logout">
-        <button class="btn btn-outline-danger w-100">
-            <i class="fas fa-sign-out-alt me-2"></i> Cerrar sesion
-        </button>
-    </form>
-</div>
+<?php
+require_once __DIR__ . '/paths.php';
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+?>
+<aside class="alc-sidebar" aria-label="Menu lateral del sistema">
+    <div class="alc-sidebar-inner">
+        <a href="<?= BASE_URL ?>/Vistas/dashboard.php" class="alc-sidebar-brand">
+            <span class="alc-sidebar-brand-icon"><i class="fas fa-landmark"></i></span>
+            <span>
+                <strong>Alcaldia</strong>
+                <small>Gestion municipal</small>
+            </span>
+        </a>
+
+        <nav class="alc-sidebar-nav">
+            <a href="<?= BASE_URL ?>/Vistas/dashboard.php" class="<?= str_contains($requestUri, '/Vistas/dashboard.php') ? 'active' : ''; ?>"><i class="fas fa-house"></i><span>Inicio</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php" class="<?= str_contains($requestUri, '/Vistas/usuarios/') ? 'active' : ''; ?>"><i class="fas fa-users-cog"></i><span>Usuarios</span></a>
+
+            <p class="alc-sidebar-group">Catastro</p>
+            <a href="<?= BASE_URL ?>/Vistas/contribuyentes/gestion_contribuyentes.php" class="<?= str_contains($requestUri, '/Vistas/contribuyentes/') ? 'active' : ''; ?>"><i class="fas fa-id-card"></i><span>Contribuyentes</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/catastro/gestion_inmuebles.php" class="<?= str_contains($requestUri, '/gestion_inmuebles.php') ? 'active' : ''; ?>"><i class="fas fa-house"></i><span>Inmuebles</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/catastro/gestion_linderos.php" class="<?= str_contains($requestUri, '/gestion_linderos.php') ? 'active' : ''; ?>"><i class="fas fa-border-all"></i><span>Linderos</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/catastro/gestion_documentos.php" class="<?= str_contains($requestUri, '/gestion_documentos.php') ? 'active' : ''; ?>"><i class="fas fa-file-contract"></i><span>Documentos</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/catastro/gestion_cedulas.php" class="<?= str_contains($requestUri, '/gestion_cedulas.php') ? 'active' : ''; ?>"><i class="fas fa-file-signature"></i><span>Cedulas</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/catastro/gestion_solvencias_municipales.php" class="<?= str_contains($requestUri, '/gestion_solvencias_municipales.php') ? 'active' : ''; ?>"><i class="fas fa-scroll"></i><span>Solvencias municipales</span></a>
+
+            <p class="alc-sidebar-group">Comercio</p>
+            <a href="<?= BASE_URL ?>/Vistas/patentes/gestionPatentes.php" class="<?= str_contains($requestUri, '/Vistas/patentes/') ? 'active' : ''; ?>"><i class="fas fa-certificate"></i><span>Patentes</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/licencias/gestionLicencias.php" class="<?= str_contains($requestUri, '/Vistas/licencias/') ? 'active' : ''; ?>"><i class="fas fa-id-badge"></i><span>Licencias</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/comercio/gestion_solvencias_comerciales.php" class="<?= str_contains($requestUri, '/Vistas/comercio/') ? 'active' : ''; ?>"><i class="fas fa-store"></i><span>Solvencias comerciales</span></a>
+
+            <p class="alc-sidebar-group">Facturacion</p>
+            <a href="<?= BASE_URL ?>/Vistas/facturacion/gestion_facturas.php" class="<?= str_contains($requestUri, '/gestion_facturas.php') ? 'active' : ''; ?>"><i class="fas fa-file-invoice"></i><span>Facturas</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/facturacion/reporte_ingresos.php" class="<?= str_contains($requestUri, '/reporte_ingresos.php') ? 'active' : ''; ?>"><i class="fas fa-chart-line"></i><span>Reporte ingresos</span></a>
+            <a href="<?= BASE_URL ?>/Vistas/impuestos/gestion_tipo_impuesto.php" class="<?= str_contains($requestUri, '/Vistas/impuestos/') ? 'active' : ''; ?>"><i class="fas fa-percent"></i><span>Tipos de impuesto</span></a>
+        </nav>
+
+        <form action="<?= BACKEND_URL ?>/controlador/UsuarioController.php" method="POST" class="alc-sidebar-logout">
+            <input type="hidden" name="accion" value="logout">
+            <button type="submit" class="btn alc-btn-logout w-100"><i class="fas fa-right-from-bracket"></i><span>Cerrar sesion</span></button>
+        </form>
+    </div>
+</aside>

@@ -1,16 +1,27 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('inmuebles');
 
 require_once '../../../Backend/clases/Inmueble.php';
 $inmuebleModel = new Inmueble();
 $inmuebles = $inmuebleModel->consultar_todos();
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
-    <h1 class="mb-4">Inmuebles</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/catastro/gestion_inmuebles.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page inmuebles-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Gestion de inmuebles</h1>
+            <p class="alc-page-subtitle">Administra direccion, tipo y area de las propiedades registradas en catastro.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInmueble">
+                <i class="fas fa-plus me-2"></i>Nuevo inmueble
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -20,15 +31,11 @@ $inmuebles = $inmuebleModel->consultar_todos();
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalInmueble">
-        <i class="fas fa-plus"></i> Nuevo Inmueble
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de inmuebles</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>ID</th>
                         <th>Direccion</th>
@@ -46,11 +53,11 @@ $inmuebles = $inmuebleModel->consultar_todos();
                             <td><?= htmlspecialchars($inm['tip_inm']); ?></td>
                             <td><?= htmlspecialchars($inm['area_inm']); ?></td>
                             <td>
-                                <span class="badge bg-<?= ($inm['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($inm['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($inm['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
-                            <td class="d-flex gap-2">
+                            <td class="d-flex gap-2 flex-wrap">
                                 <button type="button" class="btn btn-sm btn-warning"
                                     data-bs-toggle="modal"
                                     data-bs-target="#modalInmueble"
@@ -70,7 +77,7 @@ $inmuebles = $inmuebleModel->consultar_todos();
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalInmueble" tabindex="-1" aria-hidden="true">

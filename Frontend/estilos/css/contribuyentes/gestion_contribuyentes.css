@@ -1,0 +1,50 @@
+.contribuyentes-page .alc-page-header {
+  background:
+    linear-gradient(125deg, rgba(153, 27, 27, 0.12), rgba(255, 255, 255, 0.9)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.75));
+}
+
+.contribuyentes-page .alc-panel {
+  border-radius: 18px;
+}
+
+.contribuyentes-page .form-label {
+  color: #292524;
+}
+
+.contribuyentes-page #buscador {
+  border-left: 4px solid #7f1d1d;
+  background-color: #fff;
+}
+
+.contribuyentes-page #tablaContribuyentes th,
+.contribuyentes-page #tablaContribuyentes td {
+  white-space: nowrap;
+}
+
+.contribuyentes-page #tablaContribuyentes td:nth-child(2),
+.contribuyentes-page #tablaContribuyentes td:nth-child(6) {
+  white-space: normal;
+}
+
+.contribuyentes-page .dataTables_wrapper .dataTables_info,
+.contribuyentes-page .dataTables_wrapper .dataTables_paginate {
+  padding-top: 0.65rem;
+}
+
+.contribuyentes-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.contribuyentes-page .modal-title {
+  color: #1c1917;
+  font-weight: 700;
+}
+
+@media (max-width: 992px) {
+  .contribuyentes-page #tablaContribuyentes {
+    min-width: 980px;
+  }
+}

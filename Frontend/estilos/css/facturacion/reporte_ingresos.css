@@ -1,0 +1,45 @@
+.reporte-ingresos-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.16), rgba(255, 255, 255, 0.9)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.74));
+}
+
+.reporte-ingresos-page .card-header {
+  font-size: 0.9rem;
+}
+
+.reporte-ingresos-page .badge {
+  min-width: 86px;
+  text-align: center;
+}
+
+.reporte-ingresos-page #fechaReporteDiario,
+.reporte-ingresos-page #anioReporteMensual,
+.reporte-ingresos-page #mesReporteMensual {
+  border-left: 3px solid rgba(127, 29, 29, 0.34);
+}
+
+.reporte-ingresos-page #tablaIngresosDia td,
+.reporte-ingresos-page #tablaRubrosDia td,
+.reporte-ingresos-page #tablaRubrosMensuales td {
+  font-size: 0.86rem;
+}
+
+.reporte-ingresos-page #listaIngresosMensuales .list-group-item {
+  border-color: #e7e5e4;
+  padding: 0.62rem 0.8rem;
+}
+
+.reporte-ingresos-page #listaIngresosMensuales .list-group-item:hover {
+  background-color: rgba(127, 29, 29, 0.06);
+}
+
+@media (max-width: 992px) {
+  .reporte-ingresos-page .card-header {
+    font-size: 0.85rem;
+  }
+
+  .reporte-ingresos-page .badge {
+    min-width: 76px;
+  }
+}

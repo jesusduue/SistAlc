@@ -1,9 +1,9 @@
 
-<div class="card">
+<div class="card alc-panel">
     <div class="card-header">Listado de Patentes</div>
     <div class="card-body table-responsive">
         <table class="table table-bordered table-hover" id="tablaPatentes">
-            <thead class="table-dark">
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Fecha</th>

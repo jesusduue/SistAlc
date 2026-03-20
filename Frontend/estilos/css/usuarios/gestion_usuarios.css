@@ -1,0 +1,49 @@
+.usuarios-page .usuarios-hero {
+  background:
+    linear-gradient(135deg, rgba(127, 29, 29, 0.15), rgba(255, 255, 255, 0.88)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.65));
+}
+
+.usuarios-page .card {
+  margin-bottom: 1rem;
+}
+
+.usuarios-page .card-header {
+  font-size: 0.92rem;
+}
+
+.usuarios-page td,
+.usuarios-page th {
+  vertical-align: middle;
+}
+
+.usuarios-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.usuarios-page #paginador .page-link {
+  border-radius: 8px;
+  color: #7f1d1d;
+}
+
+.usuarios-page #paginador .page-item.active .page-link {
+  background-color: #7f1d1d;
+  border-color: #7f1d1d;
+  color: #fff;
+}
+
+.usuarios-page #paginador .page-link:focus {
+  box-shadow: 0 0 0 0.2rem rgba(127, 29, 29, 0.2);
+}
+
+#tbodyActividad td {
+  font-size: 0.88rem;
+}
+
+@media (max-width: 768px) {
+  .usuarios-page .card-header {
+    font-size: 0.86rem;
+  }
+}

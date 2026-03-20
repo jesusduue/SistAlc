@@ -1,7 +1,6 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('facturacion');
 
 require_once '../../../Backend/clases/Factura.php';
@@ -15,33 +14,32 @@ require_once '../../../Backend/clases/SolvenciaComercial.php';
 require_once '../../../Backend/clases/Patente.php';
 require_once '../../../Backend/clases/ReporteFinanciero.php';
 
- $facturaModel = new Factura();
- $detalleModel = new DetalleImpuesto();
- $tipoModel = new TipoImpuesto();
- $contribuyenteModel = new Contribuyente();
- $cedulaModel = new CedulaCatastral();
- $solMunModel = new SolvenciaMunicipal();
- $licenciaModel = new Licencia();
- $solComModel = new SolvenciaComercial();
- $patenteModel = new Patente();
+$facturaModel = new Factura();
+$detalleModel = new DetalleImpuesto();
+$tipoModel = new TipoImpuesto();
+$contribuyenteModel = new Contribuyente();
+$cedulaModel = new CedulaCatastral();
+$solMunModel = new SolvenciaMunicipal();
+$licenciaModel = new Licencia();
+$solComModel = new SolvenciaComercial();
+$patenteModel = new Patente();
+$reporteFinanciero = new ReporteFinanciero();
 
- $reporteFinanciero = new ReporteFinanciero();
-
- $facturas = $facturaModel->consultar_todas();
- $detallesPorFactura = [];
+$facturas = $facturaModel->consultar_todas();
+$detallesPorFactura = [];
 foreach ($facturas as $fac) {
     $detallesPorFactura[$fac['id_fac']] = $detalleModel->listar_por_factura((int)$fac['id_fac']);
 }
 
- $tiposImpuesto = $tipoModel->consultar_activos();
- $contribuyentes = $contribuyenteModel->consultar_activos();
- $cedulas = $cedulaModel->consultar_activas();
- $solvMunicipales = $solMunModel->consultar_activas();
- $licencias = $licenciaModel->consultar_activas();
- $solvComerciales = $solComModel->consultar_activas();
- $patentesActivas = $patenteModel->consultar_activas();
+$tiposImpuesto = $tipoModel->consultar_activos();
+$contribuyentes = $contribuyenteModel->consultar_activos();
+$cedulas = $cedulaModel->consultar_activas();
+$solvMunicipales = $solMunModel->consultar_activas();
+$licencias = $licenciaModel->consultar_activas();
+$solvComerciales = $solComModel->consultar_activas();
+$patentesActivas = $patenteModel->consultar_activas();
 
- $mapaContribuyentes = [];
+$mapaContribuyentes = [];
 foreach ($contribuyentes as $con) {
     $mapaContribuyentes[$con['id_con']] = [
         'nombre' => $con['nom_con'] ?? '',
@@ -50,7 +48,7 @@ foreach ($contribuyentes as $con) {
     ];
 }
 
- $patentesParaLista = [];
+$patentesParaLista = [];
 foreach ($patentesActivas as $pat) {
     $conId = $pat['fky_con'] ?? null;
     $conInfo = $conId && isset($mapaContribuyentes[$conId]) ? $mapaContribuyentes[$conId] : ['nombre' => '', 'rif' => '', 'direccion' => ''];
@@ -64,11 +62,17 @@ foreach ($patentesActivas as $pat) {
         'dir_pat' => $pat['dir_pat'] ?? '',
     ];
 }
-
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="padding-top: 2rem;">
-    <h1 class="mb-4">Gestion de Facturas</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/facturacion/gestion_facturas.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page facturas-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Gestion de facturas</h1>
+            <p class="alc-page-subtitle">Registro tributario con detalle de impuestos, estatus de pago y trazabilidad por entidad asociada.</p>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -78,8 +82,8 @@ foreach ($patentesActivas as $pat) {
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <div class="card mb-4">
-        <div class="card-header">Registrar / Editar Factura</div>
+    <section class="card alc-panel mb-4">
+        <div class="card-header">Registrar / Editar factura</div>
         <div class="card-body">
             <form id="facturaForm" action="../../../Backend/controlador/facturaController.php" method="POST">
                 <input type="hidden" name="accion" id="formAccionFactura" value="registrar">
@@ -111,23 +115,23 @@ foreach ($patentesActivas as $pat) {
                 </div>
 
                 <hr>
-                <h5>Detalle de Impuestos</h5>
+                <h5 class="mb-3">Detalle de impuestos</h5>
                 <div class="table-responsive">
                     <table class="table table-sm" id="tablaDetalle">
                         <thead>
                             <tr>
-                                <th style="width: 30%">Tipo de Impuesto</th>
-                                <th style="width: 15%">Monto</th>
-                                <th style="width: 20%">Entidad Asociada</th>
-                                <th style="width: 25%">Referencia</th>
-                                <th style="width: 10%"></th>
+                                <th class="col-impuesto">Tipo de impuesto</th>
+                                <th class="col-monto">Monto</th>
+                                <th class="col-entidad">Entidad asociada</th>
+                                <th class="col-referencia">Referencia</th>
+                                <th class="col-action"></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregarDetalle">
-                    <i class="fas fa-plus"></i> Agregar Detalle
+                    <i class="fas fa-plus"></i> Agregar detalle
                 </button>
 
                 <div class="row mt-3">
@@ -145,24 +149,24 @@ foreach ($patentesActivas as $pat) {
                     </div>
                 </div>
 
-                <div class="mt-3">
+                <div class="mt-3 d-flex gap-2 flex-wrap">
                     <button type="submit" class="btn btn-primary" id="btnGuardarFactura">
                         <i class="fas fa-save"></i> <span>Registrar Factura</span>
                     </button>
                     <button type="button" class="btn btn-secondary" id="btnCancelarEdicion" hidden>Cancelar edicion</button>
                 </div>
             </form>
-    </div>
-</div>
+        </div>
+    </section>
 
-    <div class="card mb-4">
+    <section class="card alc-panel mb-4">
         <div class="card-header d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-md-between">
-            <span>Contribuyentes y Patentes disponibles</span>
+            <span>Contribuyentes y patentes disponibles</span>
             <input type="text" class="form-control form-control-sm w-100 w-md-auto" id="buscadorPatentes" placeholder="Buscar por nombre, RIF o numero">
         </div>
         <div class="card-body table-responsive">
             <table class="table table-sm table-hover align-middle" id="tablaPatentesFacturacion">
-                <thead class="table-light">
+                <thead>
                     <tr>
                         <th>Patente</th>
                         <th>Contribuyente</th>
@@ -188,14 +192,15 @@ foreach ($patentesActivas as $pat) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-            <small class="text-muted">Haga clic en "Usar" para asignar automaticamente el contribuyente a la factura en edicion.</small>
+            <small class="text-muted">Seleccione "Usar" para asignar el contribuyente de la patente al formulario de factura.</small>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-header">Listado de Facturas</div>
+    </section>
+
+    <section class="card alc-panel">
+        <div class="card-header">Listado de facturas</div>
         <div class="card-body table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>Numero</th>
                         <th>Fecha</th>
@@ -211,6 +216,8 @@ foreach ($patentesActivas as $pat) {
                         <?php
                         $detalles = $detallesPorFactura[$fac['id_fac']] ?? [];
                         $detallesJson = htmlspecialchars(json_encode($detalles, JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
+                        $labelsPago = ['E' => 'En espera', 'P' => 'Pagada', 'A' => 'Anulada'];
+                        $pagoClass = ['E' => 'status-s', 'P' => 'status-p', 'A' => 'status-v'][$fac['est_pago']] ?? 'status-s';
                         ?>
                         <tr>
                             <td><?= htmlspecialchars($fac['num_fac']); ?></td>
@@ -218,13 +225,12 @@ foreach ($patentesActivas as $pat) {
                             <td><?= htmlspecialchars($fac['des_fac']); ?></td>
                             <td><?= number_format((float)$fac['tot_fac'], 2, ',', '.'); ?></td>
                             <td>
-                                <?php $labelsPago = ['E' => 'En espera', 'P' => 'Pagada', 'A' => 'Anulada']; ?>
-                                <span class="badge bg-<?= ($fac['est_pago'] === 'P') ? 'success' : (($fac['est_pago'] === 'A') ? 'danger' : 'secondary'); ?>">
+                                <span class="badge status-chip <?= $pagoClass; ?>">
                                     <?= $labelsPago[$fac['est_pago']] ?? 'Desconocido'; ?>
                                 </span>
                             </td>
                             <td>
-                                <span class="badge bg-<?= ($fac['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($fac['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($fac['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
@@ -258,7 +264,7 @@ foreach ($patentesActivas as $pat) {
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalDetalleFactura" tabindex="-1" aria-hidden="true">
@@ -287,7 +293,6 @@ foreach ($patentesActivas as $pat) {
 </div>
 
 <script>
-
 window.catalogosFacturacion = {
     tipos: <?= json_encode($tiposImpuesto, JSON_UNESCAPED_UNICODE); ?>,
     cedulas: <?= json_encode($cedulas, JSON_UNESCAPED_UNICODE); ?>,
@@ -299,5 +304,3 @@ window.catalogosFacturacion = {
 </script>
 <script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script src="../js/facturacion/factura.js"></script>
-</body>
-</html>

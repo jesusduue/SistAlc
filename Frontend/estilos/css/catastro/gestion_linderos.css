@@ -1,0 +1,32 @@
+.linderos-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.12), rgba(245, 245, 244, 0.92)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.82), rgba(231, 229, 228, 0.75));
+}
+
+.linderos-page .table td:nth-child(2),
+.linderos-page .table td:nth-child(3),
+.linderos-page .table td:nth-child(4),
+.linderos-page .table td:nth-child(5) {
+  min-width: 195px;
+}
+
+.linderos-page .table td:last-child {
+  min-width: 140px;
+}
+
+.linderos-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.linderos-page .modal-dialog {
+  max-width: 900px;
+}
+
+@media (max-width: 1200px) {
+  .linderos-page .table {
+    min-width: 1180px;
+  }
+}

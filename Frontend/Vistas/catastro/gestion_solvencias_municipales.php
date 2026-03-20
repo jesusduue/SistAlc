@@ -1,7 +1,6 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
 restringirAcceso('solvencias_municipales');
 
 require_once '../../../Backend/clases/SolvenciaMunicipal.php';
@@ -21,9 +20,21 @@ foreach ($contribuyentes as $item) { $mapContribuyentes[$item['id_con']] = $item
 $mapCedulas = [];
 foreach ($cedulas as $item) { $mapCedulas[$item['id_ced']] = $item['num_ced']; }
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
-    <h1 class="mb-4">Solvencias municipales</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/catastro/gestion_solvencias_municipales.css">
+<?php include '../layouts/topbar.php'; ?>
+
+<div class="container-fluid alc-page solvencias-municipales-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Solvencias municipales</h1>
+            <p class="alc-page-subtitle">Gestiona la emision, vigencia y estatus de las solvencias asociadas al catastro.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSolvenciaMunicipal">
+                <i class="fas fa-plus me-2"></i>Nueva solvencia
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -33,15 +44,11 @@ foreach ($cedulas as $item) { $mapCedulas[$item['id_ced']] = $item['num_ced']; }
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalSolvenciaMunicipal">
-        <i class="fas fa-plus"></i> Nueva solvencia
-    </button>
-
-    <div class="card">
-        <div class="card-header">Listado</div>
+    <section class="card alc-panel">
+        <div class="card-header">Listado de solvencias</div>
         <div class="card-body table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-light">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>Numero</th>
                         <th>Contribuyente</th>
@@ -55,16 +62,19 @@ foreach ($cedulas as $item) { $mapCedulas[$item['id_ced']] = $item['num_ced']; }
                 </thead>
                 <tbody>
                     <?php foreach ($solvencias as $sol): ?>
-                        <?php $labels = ['S' => 'Solicitada', 'P' => 'Pagada', 'V' => 'Vencida']; ?>
+                        <?php
+                        $labels = ['S' => 'Solicitada', 'P' => 'Pagada', 'V' => 'Vencida'];
+                        $statusClass = ['S' => 'status-s', 'P' => 'status-p', 'V' => 'status-v'][$sol['est_sol']] ?? 'status-s';
+                        ?>
                         <tr>
                             <td><?= htmlspecialchars($sol['num_sol']); ?></td>
                             <td><?= htmlspecialchars($mapContribuyentes[$sol['fky_con']] ?? 'N/D'); ?></td>
                             <td><?= htmlspecialchars($mapCedulas[$sol['fky_ced']] ?? 'N/D'); ?></td>
                             <td><?= htmlspecialchars($sol['fec_exp_sol']); ?></td>
                             <td><?= htmlspecialchars($sol['vig_sol']); ?></td>
-                            <td><span class="badge bg-info"><?= $labels[$sol['est_sol']] ?? 'Desconocido'; ?></span></td>
+                            <td><span class="badge status-chip <?= $statusClass; ?>"><?= $labels[$sol['est_sol']] ?? 'Desconocido'; ?></span></td>
                             <td>
-                                <span class="badge bg-<?= ($sol['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                                <span class="badge status-chip <?= ($sol['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                     <?= ($sol['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                                 </span>
                             </td>
@@ -96,7 +106,7 @@ foreach ($cedulas as $item) { $mapCedulas[$item['id_ced']] = $item['num_ced']; }
                 </tbody>
             </table>
         </div>
-    </div>
+    </section>
 </div>
 
 <div class="modal fade" id="modalSolvenciaMunicipal" tabindex="-1" aria-hidden="true">

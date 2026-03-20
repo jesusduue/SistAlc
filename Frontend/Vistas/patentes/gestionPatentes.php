@@ -1,7 +1,6 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-
 restringirAcceso('patentes');
 
 require_once '../../../Backend/clases/Patente.php';
@@ -17,13 +16,22 @@ foreach ($contribuyentes as $con) {
     $mapaContribuyentes[$con['id_con']] = $con['nom_con'];
 }
 ?>
-
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/patentes/gestion_patentes.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <?php include '../layouts/topbar.php'; ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
 
-<div class="container-fluid" style="padding-top: 2rem;">
-    <h1 class="mb-4">Gestión de Patentes</h1>
+<div class="container-fluid alc-page patentes-page">
+    <section class="alc-page-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div>
+            <h1 class="alc-page-title">Gestion de patentes</h1>
+            <p class="alc-page-subtitle">Control de registros comerciales, representante legal y estado de tramite.</p>
+        </div>
+        <div class="alc-page-tools">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPatente">
+                <i class="fas fa-file-circle-plus me-2"></i>Registrar patente
+            </button>
+        </div>
+    </section>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?php echo $_SESSION['mensaje']['tipo']; ?> alert-dismissible fade show" role="alert">
@@ -33,22 +41,19 @@ foreach ($contribuyentes as $con) {
         <?php unset($_SESSION['mensaje']); ?>
     <?php endif; ?>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalPatente">
-        <i class="fas fa-file-circle-plus"></i> Registrar Patente
-    </button>
-
     <?php include 'modalRegistrarActualizarPatente.php'; ?>
 
-    <div class="mb-3">
-        <input type="text" id="buscador" class="form-control" placeholder="Buscar patente...">
-    </div>
+    <section class="card alc-panel mb-3">
+        <div class="card-body">
+            <label for="buscador" class="form-label fw-semibold mb-2">Busqueda rapida</label>
+            <input type="text" id="buscador" class="form-control" placeholder="Buscar patente, nombre comercial, RIF o representante...">
+        </div>
+    </section>
 
     <?php include 'listarPatentes.php'; ?>
 </div>
 
-<!-- Bootstrap bundle: ruta root-relative para consistencia -->
 <script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
-<!-- Cargamos scripts en el orden correcto: jQuery -> DataTables -> sweetalert -> scripts locales -->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -69,7 +74,7 @@ foreach ($contribuyentes as $con) {
             language: {
                 paginate: {
                     first: 'Primero',
-                    last: 'Último',
+                    last: 'Ultimo',
                     next: 'Siguiente',
                     previous: 'Anterior'
                 },
@@ -87,4 +92,3 @@ foreach ($contribuyentes as $con) {
         });
     });
 </script>
-

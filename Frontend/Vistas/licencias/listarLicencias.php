@@ -5,11 +5,11 @@ $descripcionEstado = [
     'V' => 'Vencida'
 ];
 ?>
-<div class="card">
+<div class="card alc-panel">
     <div class="card-header">Listado de Licencias</div>
     <div class="card-body table-responsive">
         <table class="table table-bordered table-hover" id="tablaLicencias">
-            <thead class="table-dark">
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Numero</th>
@@ -36,9 +36,10 @@ $descripcionEstado = [
                         <td><?= htmlspecialchars($facturaTexto); ?></td>
                         <td><?= htmlspecialchars($lic['fec_exp_lic']); ?></td>
                         <td><?= htmlspecialchars($lic['vig_lic']); ?></td>
-                        <td><?= htmlspecialchars($descripcionEstado[$lic['est_lic']] ?? 'Desconocido'); ?></td>
+                        <?php $estadoTramiteClass = ['S' => 'status-s', 'P' => 'status-p', 'V' => 'status-v'][$lic['est_lic']] ?? 'status-s'; ?>
+                        <td><span class="badge status-chip <?= $estadoTramiteClass; ?>"><?= htmlspecialchars($descripcionEstado[$lic['est_lic']] ?? 'Desconocido'); ?></span></td>
                         <td>
-                            <span class="badge bg-<?= ($lic['est_registro'] === 'A') ? 'success' : 'secondary'; ?>">
+                            <span class="badge status-chip <?= ($lic['est_registro'] === 'A') ? 'status-a' : 'status-i'; ?>">
                                 <?= ($lic['est_registro'] === 'A') ? 'Activo' : 'Inactivo'; ?>
                             </span>
                         </td>

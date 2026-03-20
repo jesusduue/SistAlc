@@ -1,0 +1,57 @@
+.facturas-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.17), rgba(255, 255, 255, 0.88)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.72));
+}
+
+.facturas-page .col-impuesto { width: 30%; }
+.facturas-page .col-monto { width: 15%; }
+.facturas-page .col-entidad { width: 20%; }
+.facturas-page .col-referencia { width: 25%; }
+.facturas-page .col-action { width: 10%; }
+
+.facturas-page #tablaDetalle td,
+.facturas-page #tablaDetalle th {
+  vertical-align: middle;
+}
+
+.facturas-page #tablaDetalle .form-control,
+.facturas-page #tablaDetalle .form-select {
+  min-width: 140px;
+}
+
+.facturas-page #tablaPatentesFacturacion td:nth-child(1),
+.facturas-page #tablaPatentesFacturacion td:nth-child(4) {
+  white-space: normal;
+}
+
+.facturas-page #tablaPatentesFacturacion td:last-child,
+.facturas-page .table td:last-child {
+  min-width: 190px;
+}
+
+.facturas-page #buscadorPatentes {
+  max-width: 360px;
+  border-left: 4px solid #7f1d1d;
+}
+
+.facturas-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.facturas-page .btn-outline-info:hover {
+  background-color: #0ea5e9;
+  color: #fff;
+}
+
+.facturas-page #modalDetalleFactura .table td {
+  font-size: 0.88rem;
+}
+
+@media (max-width: 1200px) {
+  .facturas-page .table {
+    min-width: 1120px;
+  }
+}

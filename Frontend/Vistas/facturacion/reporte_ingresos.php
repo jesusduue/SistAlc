@@ -1,10 +1,8 @@
 <?php
 include '../layouts/header.php';
 include '../layouts/proteger_vista.php';
-include '../layouts/topbar.php';
-restringirAcceso('facturacion'); // Mantenemos la misma restricción de acceso
+restringirAcceso('facturacion');
 
-// Se mantienen todas las dependencias de clases por si los reportes las necesitan internamente
 require_once '../../../Backend/clases/Factura.php';
 require_once '../../../Backend/clases/DetalleImpuesto.php';
 require_once '../../../Backend/clases/TipoImpuesto.php';
@@ -16,33 +14,33 @@ require_once '../../../Backend/clases/SolvenciaComercial.php';
 require_once '../../../Backend/clases/Patente.php';
 require_once '../../../Backend/clases/ReporteFinanciero.php';
 
-// Se instancian los modelos, aunque solo usaremos el de reportes activamente.
- $facturaModel = new Factura();
- $detalleModel = new DetalleImpuesto();
- $tipoModel = new TipoImpuesto();
- $contribuyenteModel = new Contribuyente();
- $cedulaModel = new CedulaCatastral();
- $solMunModel = new SolvenciaMunicipal();
- $licenciaModel = new Licencia();
- $solComModel = new SolvenciaComercial();
- $patenteModel = new Patente();
- $reporteFinanciero = new ReporteFinanciero();
+$facturaModel = new Factura();
+$detalleModel = new DetalleImpuesto();
+$tipoModel = new TipoImpuesto();
+$contribuyenteModel = new Contribuyente();
+$cedulaModel = new CedulaCatastral();
+$solMunModel = new SolvenciaMunicipal();
+$licenciaModel = new Licencia();
+$solComModel = new SolvenciaComercial();
+$patenteModel = new Patente();
+$reporteFinanciero = new ReporteFinanciero();
 
-// --- DATOS ESENCIALES PARA LOS REPORTES ---
- $hoy = date('Y-m-d');
- $resumenIngresosDia = $reporteFinanciero->resumenDiarioContribuyentes($hoy);
- $resumenRubrosDia = $reporteFinanciero->resumenDiarioRubros($hoy);
- $indicadoresFinancieros = $reporteFinanciero->indicadoresDashboard((int)date('Y'));
- $rubrosMesActual = $reporteFinanciero->distribucionRubrosMensual((int)date('Y'), (int)date('n'));
-// -----------------------------------------
+$hoy = date('Y-m-d');
+$resumenIngresosDia = $reporteFinanciero->resumenDiarioContribuyentes($hoy);
+$resumenRubrosDia = $reporteFinanciero->resumenDiarioRubros($hoy);
+$indicadoresFinancieros = $reporteFinanciero->indicadoresDashboard((int)date('Y'));
+$rubrosMesActual = $reporteFinanciero->distribucionRubrosMensual((int)date('Y'), (int)date('n'));
 ?>
-<link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="padding-top: 2rem;">
-    
-    <h1 class="mb-4">Reportes de Ingresos</h1>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/facturacion/reporte_ingresos.css">
+<?php include '../layouts/topbar.php'; ?>
 
-    <!-- Tarjeta de Reporte Diario -->
-    <div class="card mb-4">
+<div class="container-fluid alc-page reporte-ingresos-page">
+    <section class="alc-page-header">
+        <h1 class="alc-page-title">Reporte de ingresos</h1>
+        <p class="alc-page-subtitle">Monitorea movimientos diarios y consolidado mensual por rubro e indicadores netos.</p>
+    </section>
+
+    <section class="card alc-panel mb-4">
         <div class="card-header d-flex flex-column flex-lg-row gap-2 align-items-lg-center justify-content-lg-between">
             <span>Reporte diario de ingresos y rubros</span>
             <div class="d-flex gap-2 flex-column flex-sm-row">
@@ -55,15 +53,15 @@ require_once '../../../Backend/clases/ReporteFinanciero.php';
                 <div class="col-12 col-lg-6">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h5 class="mb-0">Movimientos por contribuyente</h5>
-                        <div class="text-end">
-                            <span class="badge bg-success" id="totalPagadoDia">+0,00</span>
-                            <span class="badge bg-danger" id="totalAnuladoDia">-0,00</span>
-                            <span class="badge bg-secondary" id="totalNetoDia">0,00</span>
+                        <div class="text-end d-flex gap-2 flex-wrap justify-content-end">
+                            <span class="badge status-chip status-p" id="totalPagadoDia">+0,00</span>
+                            <span class="badge status-chip status-v" id="totalAnuladoDia">-0,00</span>
+                            <span class="badge status-chip status-s" id="totalNetoDia">0,00</span>
                         </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-striped" id="tablaIngresosDia">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>Hora</th>
                                     <th>Contribuyente</th>
@@ -78,15 +76,15 @@ require_once '../../../Backend/clases/ReporteFinanciero.php';
                 <div class="col-12 col-lg-6">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h5 class="mb-0">Resumen por rubros</h5>
-                        <div class="text-end">
-                            <span class="badge bg-success" id="totalRubrosPagado">+0,00</span>
-                            <span class="badge bg-danger" id="totalRubrosAnulado">-0,00</span>
-                            <span class="badge bg-secondary" id="totalRubrosNeto">0,00</span>
+                        <div class="text-end d-flex gap-2 flex-wrap justify-content-end">
+                            <span class="badge status-chip status-p" id="totalRubrosPagado">+0,00</span>
+                            <span class="badge status-chip status-v" id="totalRubrosAnulado">-0,00</span>
+                            <span class="badge status-chip status-s" id="totalRubrosNeto">0,00</span>
                         </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-sm table-striped" id="tablaRubrosDia">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>Rubro</th>
                                     <th class="text-end">Pagado</th>
@@ -100,10 +98,9 @@ require_once '../../../Backend/clases/ReporteFinanciero.php';
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Tarjeta de Reporte Mensual (MANTENIDA) -->
-    <div class="card mb-4">
+    <section class="card alc-panel mb-4">
         <div class="card-header d-flex flex-column flex-lg-row gap-2 align-items-lg-center justify-content-lg-between">
             <span>Resumen mensual por rubros</span>
             <div class="d-flex gap-2 flex-column flex-sm-row align-items-sm-center">
@@ -131,7 +128,7 @@ require_once '../../../Backend/clases/ReporteFinanciero.php';
                     <h5 class="mb-3">Totales por rubro</h5>
                     <div class="table-responsive">
                         <table class="table table-sm table-hover" id="tablaRubrosMensuales">
-                            <thead class="table-light">
+                            <thead>
                                 <tr>
                                     <th>Rubro</th>
                                     <th class="text-end">Monto (Bs)</th>
@@ -147,11 +144,10 @@ require_once '../../../Backend/clases/ReporteFinanciero.php';
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
 </div>
 <script>
-
 window.catalogosFacturacion = {
     reportes: {
         diario: <?= json_encode($resumenIngresosDia, JSON_UNESCAPED_UNICODE); ?>,
@@ -162,7 +158,6 @@ window.catalogosFacturacion = {
     }
 };
 </script>
-
 
 <script src="/SistAlc/Frontend/estilos/js/bootstrap.bundle.min.js"></script>
 <script src="../js/facturacion/reportesFacturacion.js"></script>

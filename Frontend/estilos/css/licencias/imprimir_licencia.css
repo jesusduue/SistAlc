@@ -1,0 +1,199 @@
+.licencia-print-page {
+  margin: 0;
+  background-color: #e7e5e4;
+  color: #1c1917;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+.print-container {
+  max-width: 920px;
+  margin: 1.5rem auto;
+  background: #fff;
+  border: 1px solid #d6d3d1;
+  box-shadow: 0 20px 44px rgba(28, 25, 23, 0.14);
+  padding: 1.5rem 1.6rem 2rem;
+}
+
+.print-actions .btn {
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid transparent;
+  padding: 0.35rem 0.65rem;
+  text-decoration: none;
+  cursor: pointer;
+  background: #fff;
+  color: #1c1917;
+}
+
+.btn-sm {
+  font-size: 0.78rem;
+}
+
+.btn-primary {
+  background: #7f1d1d;
+  color: #fff;
+  border-color: #7f1d1d;
+}
+
+.btn-outline-secondary {
+  color: #57534e;
+  border-color: #a8a29e;
+}
+
+.print-header {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 2px solid #7f1d1d;
+  padding-bottom: 0.9rem;
+}
+
+.escudo-wrap img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+}
+
+.print-header h1 {
+  margin: 0;
+  font-family: "Merriweather", serif;
+  font-size: 1.05rem;
+}
+
+.print-header h2 {
+  margin: 0.22rem 0;
+  font-size: 0.98rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.print-header p {
+  margin: 0;
+  color: #57534e;
+  font-size: 0.85rem;
+}
+
+.document-title {
+  text-align: center;
+  margin: 1.15rem 0;
+}
+
+.document-title h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.document-title p {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: #57534e;
+}
+
+.document-chip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.document-chip span {
+  border: 1px solid #d6d3d1;
+  border-radius: 7px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.8rem;
+  background-color: #fafaf9;
+}
+
+.info-block {
+  margin-bottom: 1rem;
+}
+
+.info-block h4 {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7f1d1d;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.info-table td {
+  border: 1px solid #e7e5e4;
+  padding: 0.48rem 0.56rem;
+  vertical-align: top;
+}
+
+.info-label {
+  width: 32%;
+  background: #fafaf9;
+  font-weight: 700;
+}
+
+.document-footer {
+  margin-top: 1.35rem;
+  border-top: 1px dashed #a8a29e;
+  padding-top: 0.9rem;
+  font-size: 0.8rem;
+  color: #57534e;
+}
+
+.firmas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.firmas div {
+  border-top: 1px solid #1c1917;
+  padding-top: 0.35rem;
+  text-align: center;
+  color: #292524;
+}
+
+@media print {
+  .licencia-print-page {
+    background: #fff;
+  }
+
+  .print-container {
+    box-shadow: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+
+  .print-actions {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .document-chip {
+    grid-template-columns: 1fr;
+  }
+
+  .print-header {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .escudo-wrap {
+    text-align: center;
+  }
+}

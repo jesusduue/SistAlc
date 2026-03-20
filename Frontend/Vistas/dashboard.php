@@ -1,23 +1,20 @@
 <?php
-// Dashboard.php // vista
-
 include 'layouts/headerDashboard.php';
 
-// Verificar sesión (puedes moverlo a proteger_vista si prefieres)
 if (!isset($_SESSION['nom_usu']) || !isset($_SESSION['nom_rol'])) {
-  header('Location: ../../index.php');
-  exit;
+    header('Location: ../../index.php');
+    exit;
 }
 
 $nombre_usuario = $_SESSION['nom_usu'];
-$nombre_rol     = $_SESSION['nom_rol'];
+$nombre_rol = $_SESSION['nom_rol'];
 
-include 'layouts/topbar.php';
+require_once 'layouts/paths.php';
+?>
+<link rel="stylesheet" href="<?= ASSETS_CSS ?>/dashboard/dashboard.css">
+<?php include 'layouts/topbar.php'; ?>
 
-
-// ==========================
-// Datos calculados para el dashboard
-// ==========================
+<?php
 require_once '../../Backend/clases/dashboard.php';
 require_once '../../Backend/clases/ReporteFinanciero.php';
 
@@ -39,238 +36,144 @@ $rubrosMesData = $reporteFinanciero->distribucionRubrosMensual($anioActual, $mes
 $labelsTipos = [];
 $valoresTipos = [];
 if (!empty($rubrosMesData['rubros'])) {
-  foreach ($rubrosMesData['rubros'] as $rubro) {
-    $labelsTipos[] = $rubro['nombre'];
-    $valoresTipos[] = $rubro['total'];
-  }
+    foreach ($rubrosMesData['rubros'] as $rubro) {
+        $labelsTipos[] = $rubro['nombre'];
+        $valoresTipos[] = $rubro['total'];
+    }
 }
 if (!$labelsTipos) {
-  $labelsTipos = ['Sin datos'];
-  $valoresTipos = [0];
+    $labelsTipos = ['Sin datos'];
+    $valoresTipos = [0];
 }
 
-//Actividad Reciente
 $actividadReciente = $dash->actividadesRecientes();
 ?>
 
-<link rel="stylesheet" href="../estilos/css/bootstrap.min.css">
-
-<!-- ★ Estilos responsive específicos del dashboard -->
-<style>
-  /* Contenedor principal:
-   - En móviles: padding-top estándar.
-
-.dashboard-wrapper {
-  padding-top: 1.25rem;
-}
-@media (min-width: 768px) {
-  .dashboard-wrapper {
-    margin-left: 250px; 
-  }
-}
-
-/* KPIs: icono redondo consistente */
-  .kpi-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 9999px;
-  }
-
-  /* Tarjetas con sombra suave y sin bordes duros */
-  .card.border-0,
-  .card.shadow-sm {
-    border-radius: .75rem;
-  }
-
-  /* ★ Contenedor de gráficos:
-   - Altura fluida sin forzar width/height en el canvas.
-   - Usa min-height como fallback para navegadores sin aspect-ratio. */
-  .chart-container {
-    position: relative;
-    width: 100%;
-    min-height: 260px;
-    /* fallback */
-    height: 40vh;
-    /* crece con la pantalla */
-    max-height: 520px;
-    /* evita ser enorme en monitores grandes */
-  }
-
-  @media (max-width: 576px) {
-    .chart-container {
-      height: 35vh;
-      min-height: 220px;
-    }
-  }
-
-  /* Tabla actividad: mejora scroll en móviles */
-  .table-responsive {
-    -webkit-overflow-scrolling: touch;
-  }
-</style>
-
-<div class="container-fluid dashboard-wrapper"><!-- ★ wrapper responsive -->
-  <!-- Bienvenida -->
-  <div class="d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-2 mb-3">
-    <div>
-      <h1 class="mb-1 h3">Bienvenido, <?php echo htmlspecialchars($nombre_usuario); ?></h1>
-      <p class="text-muted mb-0">Rol: <strong><?php echo htmlspecialchars($nombre_rol); ?></strong></p>
-    </div>
-    <!-- (Opcional) Espacio para filtros del dashboard -->
-  </div>
-
-  <!-- KPIs -->
-  <div class="row g-3 mb-3">
-    <div class="col-12 col-md-2">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="kpi-icon bg-primary-subtle">
-            <i class="fas fa-sack-dollar fa-lg text-primary"></i>
-          </div>
-          <div>
-            <div class="small text-muted">Ingresos netos (<?php echo date('Y'); ?>)</div>
-            <div class="h5 mb-0">Bs. <?php echo number_format($totalIngresosAnio, 2, ',', '.'); ?></div>
-            <div class="small text-danger">Anulado Bs. <?php echo number_format($totalAnuladoAnio, 2, ',', '.'); ?></div>
-            <a href="#" class="small">Ver reporte completo</a>
-          </div>
+<div class="container-fluid alc-page dashboard-page">
+    <section class="alc-page-header dashboard-hero">
+        <div>
+            <h1 class="alc-page-title">Panel de gestion municipal</h1>
+            <p class="alc-page-subtitle">Bienvenido, <strong><?php echo htmlspecialchars($nombre_usuario); ?></strong>. Rol activo: <strong><?php echo htmlspecialchars($nombre_rol); ?></strong>.</p>
         </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-2">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="kpi-icon bg-warning-subtle">
-            <i class="fas fa-file-invoice-dollar fa-lg text-warning"></i>
-          </div>
-          <div>
-            <div class="small text-muted">Facturas Pendientes</div>
-            <div class="h5 mb-0"><?php echo (int)$facturasPendientes; ?></div>
-            <a href="#" class="small">Ver todas las facturas</a>
-          </div>
+        <div class="dashboard-meta">
+            <span><i class="fas fa-calendar-days"></i> <?php echo date('d/m/Y'); ?></span>
+            <span><i class="fas fa-chart-simple"></i> Ejercicio <?php echo $anioActual; ?></span>
         </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-2">
-      <div class="card shadow-sm border-0 h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="kpi-icon bg-info-subtle">
-            <i class="fas fa-bell fa-lg text-info"></i>
-          </div>
-          <div>
-            <div class="small text-muted">Vencimientos Próximos (30 días)</div>
-            <div class="h5 mb-0"><?php echo (int)$vencimientosProx30; ?></div>
-            <a href="#" class="small">Ver vencimientos</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Tarjetas de navegación -->
-  <div class="row g-3 mb-5">
-    <div class="col-12 col-md-2">
-      <div class="card shadow h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-users fa-3x mb-3 text-primary"></i>
-          <h5 class="card-title">Usuarios</h5>
-          <p class="card-text">Gestión de cuentas y roles de acceso.</p>
-          <a href="../Vistas/usuarios/gestion_usuarios.php" class="btn btn-outline-primary">Administrar</a>
+    <section class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="card kpi-card h-100">
+                <div class="card-body">
+                    <div class="kpi-head">
+                        <span class="kpi-icon"><i class="fas fa-sack-dollar"></i></span>
+                        <p>Ingresos netos</p>
+                    </div>
+                    <h3>Bs. <?php echo number_format($totalIngresosAnio, 2, ',', '.'); ?></h3>
+                    <small>Anulado: Bs. <?php echo number_format($totalAnuladoAnio, 2, ',', '.'); ?></small>
+                </div>
+            </article>
         </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-2">
-      <div class="card shadow h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-id-card fa-3x mb-3 text-success"></i>
-          <h5 class="card-title">Contribuyentes</h5>
-          <p class="card-text">Registro y control de contribuyentes.</p>
-          <a href="../Vistas/contribuyentes/gestion_contribuyentes.php" class="btn btn-outline-success">Administrar</a>
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="card kpi-card h-100">
+                <div class="card-body">
+                    <div class="kpi-head">
+                        <span class="kpi-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+                        <p>Facturas pendientes</p>
+                    </div>
+                    <h3><?php echo (int)$facturasPendientes; ?></h3>
+                    <small>Documentos por gestionar</small>
+                </div>
+            </article>
         </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-2">
-      <div class="card shadow h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-building fa-3x mb-3 text-warning"></i>
-          <h5 class="card-title">Patentes</h5>
-          <p class="card-text">Control de actividades económicas y licencias.</p>
-          <a href="../Vistas/patentes/gestionPatentes.php" class="btn btn-outline-warning">Administrar</a>
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="card kpi-card h-100">
+                <div class="card-body">
+                    <div class="kpi-head">
+                        <span class="kpi-icon"><i class="fas fa-bell"></i></span>
+                        <p>Vencimientos proximos (30 dias)</p>
+                    </div>
+                    <h3><?php echo (int)$vencimientosProx30; ?></h3>
+                    <small>Control preventivo de tramites</small>
+                </div>
+            </article>
         </div>
-      </div>
-    </div>
-    <!-- catastro -->
-    <div class="col-12 col-md-2">
-      <div class="card shadow h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-map fa-3x mb-3 text-danger"></i>
-          <h5 class="card-title">Catastro</h5>
-          <p class="card-text">Gestión de propiedades y terrenos.</p>
-          <a href="../Vistas/catastro/gestion_cedulas.php" class="btn btn-outline-danger">Administrar</a>
-        </div>
-      </div>
-    </div>
-    <!-- facturacion -->
-    <div class="col-12 col-md-2">
-      <div class="card shadow h-100">
-        <div class="card-body text-center">
-          <i class="fas fa-file-invoice fa-3x mb-3 text-secondary"></i>
-          <h5 class="card-title">Facturación</h5>
-          <p class="card-text">Generación y seguimiento de facturas.</p>
-          <a href="../Vistas/facturacion/gestion_facturas.php" class="btn btn-outline-secondary">Administrar</a>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-<!-- Gráficas (estático por ahora) -->
-<div class="row g-3 mb-2">
-  <div class="col-12 col-xl-6"><!-- ★ xl en vez de lg para más comodidad -->
-    <div class="card shadow-sm border-0 h-100">
-      <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <span class="fw-semibold">Ingresos Mensuales (<?php echo date('Y'); ?>)</span>
-        <div class="btn-group btn-group-sm" role="group">
-          <button id="btnMensual" class="btn btn-outline-secondary active">Mensual</button>
-          <button id="btnTrimestral" class="btn btn-outline-secondary">Trimestral</button>
+    <section class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="card dashboard-link-card h-100">
+                <div class="card-body">
+                    <i class="fas fa-users"></i>
+                    <h4>Usuarios</h4>
+                    <p>Administracion de cuentas y roles institucionales.</p>
+                    <a href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php" class="btn btn-outline-primary btn-sm">Ir al modulo</a>
+                </div>
+            </article>
         </div>
-      </div>
-      <div class="card-body">
-        <div class="chart-container"><!-- ★ contenedor flexible -->
-          <canvas id="chartIngresos"></canvas>
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="card dashboard-link-card h-100">
+                <div class="card-body">
+                    <i class="fas fa-id-card"></i>
+                    <h4>Contribuyentes</h4>
+                    <p>Registro y consulta de responsables tributarios.</p>
+                    <a href="<?= BASE_URL ?>/Vistas/contribuyentes/gestion_contribuyentes.php" class="btn btn-outline-primary btn-sm">Ir al modulo</a>
+                </div>
+            </article>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-xl-4">
-    <div class="card shadow-sm border-0 h-100">
-      <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <span class="fw-semibold">Distribución por Tipo de Impuesto</span>
-        <button class="btn btn-sm btn-outline-primary"><i class="fas fa-file-export me-1"></i>Exportar</button>
-      </div>
-      <div class="card-body">
-        <div class="chart-container" style="min-height:240px; height: 38vh;"><!-- ★ más bajo para doughnut -->
-          <canvas id="chartTipos"></canvas>
+        <div class="col-12 col-md-6 col-xl-4">
+            <article class="card dashboard-link-card h-100">
+                <div class="card-body">
+                    <i class="fas fa-certificate"></i>
+                    <h4>Patentes y licencias</h4>
+                    <p>Control de autorizaciones comerciales y solvencias.</p>
+                    <a href="<?= BASE_URL ?>/Vistas/patentes/gestionPatentes.php" class="btn btn-outline-primary btn-sm">Ir al modulo</a>
+                </div>
+            </article>
         </div>
-      </div>
-    </div>
-  </div>
+    </section>
+
+    <section class="row g-3">
+        <div class="col-12 col-xxl-8">
+            <article class="card chart-card h-100">
+                <header class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span>Ingresos mensuales (<?php echo date('Y'); ?>)</span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button id="btnMensual" class="btn btn-outline-secondary active">Mensual</button>
+                        <button id="btnTrimestral" class="btn btn-outline-secondary">Trimestral</button>
+                    </div>
+                </header>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="chartIngresos"></canvas>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-xxl-4">
+            <article class="card chart-card h-100">
+                <header class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <span>Distribucion por rubro</span>
+                    <button class="btn btn-sm btn-outline-primary" type="button"><i class="fas fa-file-export me-1"></i>Exportar</button>
+                </header>
+                <div class="card-body">
+                    <div class="chart-container chart-doughnut">
+                        <canvas id="chartTipos"></canvas>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
 </div>
 
-<?php include 'layouts/footerDashboard.php'; ?>
-
-<!-- Chart.js (no depende de jQuery) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-  // ===== Datos PHP -> JS =====
   const labelsMeses = <?php echo json_encode($labelsMeses, JSON_UNESCAPED_UNICODE); ?>;
   const ingresosMensuales = <?php echo json_encode($ingresosMensuales); ?>;
   const labelsTipos = <?php echo json_encode($labelsTipos, JSON_UNESCAPED_UNICODE); ?>;
   const valoresTipos = <?php echo json_encode($valoresTipos); ?>;
   const actividadReciente = <?php echo json_encode($actividadReciente, JSON_UNESCAPED_UNICODE); ?>;
 
-  // ===== Línea: ingresos mensuales / trimestral =====
   let chartIngresos;
 
   function renderIngresos(labels, data) {
@@ -288,8 +191,8 @@ $actividadReciente = $dash->actividadesRecientes();
         }]
       },
       options: {
-        responsive: true, // ★
-        maintainAspectRatio: false, // ★ usa el alto del contenedor .chart-container
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             display: false
@@ -332,7 +235,6 @@ $actividadReciente = $dash->actividadesRecientes();
   });
   renderIngresos(labelsMeses, ingresosMensuales);
 
-  // ===== Doughnut: distribución por tipo =====
   new Chart(document.getElementById('chartTipos'), {
     type: 'doughnut',
     data: {
@@ -342,8 +244,8 @@ $actividadReciente = $dash->actividadesRecientes();
       }]
     },
     options: {
-      responsive: true, // ★
-      maintainAspectRatio: false, // ★
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           position: 'bottom'
@@ -352,3 +254,4 @@ $actividadReciente = $dash->actividadesRecientes();
     }
   });
 </script>
+<?php include 'layouts/footerDashboard.php'; ?>
