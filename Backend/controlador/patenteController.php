@@ -32,18 +32,20 @@ if (isset($_REQUEST['accion'])) {
 
             if ($patente->numero_existe($datos['num_pat'])) {
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'warning',
+                    'tipo' => 'warning',
                     'texto' => 'El número de patente ya está registrado.'
                 ];
-            } elseif ($patente->registrar($datos)) {
+            }
+            elseif ($patente->registrar($datos)) {
                 $nuevoId = $patente->id_pat ?? null;
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'success',
+                    'tipo' => 'success',
                     'texto' => 'Patente registrada exitosamente.'
                 ];
-            } else {
+            }
+            else {
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'danger',
+                    'tipo' => 'danger',
                     'texto' => 'Ocurrió un error al registrar la patente.'
                 ];
             }
@@ -56,13 +58,13 @@ if (isset($_REQUEST['accion'])) {
                 'Nueva patente: ' . $datos['num_pat'],
                 'patente',
                 $nuevoId,
-                ['rif' => $datos['rif_pat']]
+            ['rif' => $datos['rif_pat']]
             );
             break;
 
         case 'modificar':
             $datos = [
-                'id_pat'  => $_POST['id_pat'],
+                'id_pat' => $_POST['id_pat'],
                 'num_pat' => $_POST['num_pat'],
                 'rif_pat' => $_POST['rif_pat'],
                 'nom_pat' => $_POST['nom_pat'],
@@ -74,12 +76,13 @@ if (isset($_REQUEST['accion'])) {
 
             if ($patente->modificar($datos)) {
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'success',
+                    'tipo' => 'success',
                     'texto' => 'La patente se modificó correctamente.'
                 ];
-            } else {
+            }
+            else {
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'danger',
+                    'tipo' => 'danger',
                     'texto' => 'No se pudo modificar la patente.'
                 ];
             }
@@ -97,12 +100,12 @@ if (isset($_REQUEST['accion'])) {
 
         case 'cambiar_estado':
             if (isset($_GET['id'], $_GET['nuevo_estado'])) {
-                $ok = $patente->cambiar_estado_registro((int)$_GET['id'], $_GET['nuevo_estado']);
+                $ok = $patente->cambiar_estado_tabla((int)$_GET['id'], $_GET['nuevo_estado']);
                 if ($ok) {
                     $_SESSION['mensaje'] = [
-                        'tipo'   => 'success',
+                        'tipo' => 'success',
                         'titulo' => 'Estado actualizado',
-                        'texto'  => 'El estado del registro de patente se cambió correctamente.'
+                        'texto' => 'El estado del registro de patente se cambió correctamente.'
                     ];
                     $auditoria->registrarActividad(
                         $_SESSION['id_usu'] ?? 0,
@@ -112,13 +115,14 @@ if (isset($_REQUEST['accion'])) {
                         'Cambio de estado de registro patente ID ' . $_GET['id'],
                         'patente',
                         (int)$_GET['id'],
-                        ['nuevo_estado_tabla' => $_GET['nuevo_estado']]
+                    ['nuevo_estado_tabla' => $_GET['nuevo_estado']]
                     );
-                } else {
+                }
+                else {
                     $_SESSION['mensaje'] = [
-                        'tipo'   => 'error',
+                        'tipo' => 'error',
                         'titulo' => 'No se pudo actualizar',
-                        'texto'  => 'Ocurrió un problema al cambiar el estado.'
+                        'texto' => 'Ocurrió un problema al cambiar el estado.'
                     ];
                 }
             }
@@ -129,9 +133,9 @@ if (isset($_REQUEST['accion'])) {
                 $ok = $patente->actualizar_estado_patente((int)$_GET['id'], $_GET['nuevo_estado']);
                 if ($ok) {
                     $_SESSION['mensaje'] = [
-                        'tipo'   => 'info',
+                        'tipo' => 'info',
                         'titulo' => 'Estado de trámite',
-                        'texto'  => 'El estado de la patente se actualizó correctamente.'
+                        'texto' => 'El estado de la patente se actualizó correctamente.'
                     ];
                     $auditoria->registrarActividad(
                         $_SESSION['id_usu'] ?? 0,
@@ -141,13 +145,14 @@ if (isset($_REQUEST['accion'])) {
                         'Actualización de trámite patente ID ' . $_GET['id'],
                         'patente',
                         (int)$_GET['id'],
-                        ['estado_patente' => $_GET['nuevo_estado']]
+                    ['estado_patente' => $_GET['nuevo_estado']]
                     );
-                } else {
+                }
+                else {
                     $_SESSION['mensaje'] = [
-                        'tipo'   => 'warning',
+                        'tipo' => 'warning',
                         'titulo' => 'Sin cambios',
-                        'texto'  => 'No se pudo actualizar el estado del trámite.'
+                        'texto' => 'No se pudo actualizar el estado del trámite.'
                     ];
                 }
             }
@@ -158,12 +163,13 @@ if (isset($_REQUEST['accion'])) {
 
             if ($id && $patente->eliminar($id)) {
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'info',
+                    'tipo' => 'info',
                     'texto' => 'Patente eliminada.'
                 ];
-            } else {
+            }
+            else {
                 $_SESSION['mensaje'] = [
-                    'tipo'  => 'danger',
+                    'tipo' => 'danger',
                     'texto' => 'No se pudo eliminar la patente.'
                 ];
             }
@@ -188,8 +194,8 @@ if (isset($_REQUEST['accion'])) {
         header('Location: ../../Frontend/Vistas/patentes/gestionPatentes.php');
         exit();
     }
-} else {
+}
+else {
     header('Location: ../../index.php');
     exit();
 }
-

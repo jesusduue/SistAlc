@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS factura (
   des_fac VARCHAR(255) NOT NULL,                -- Descripción general (Ej: "Pago de impuestos municipales")
   tot_fac DECIMAL(16,2) NOT NULL,
   est_pago CHAR(1) NOT NULL DEFAULT 'E',        -- Estado del pago: 'E' En espera, 'P' Pagada, 'A' Anulada
+  fec_anulacion DATETIME NULL,               -- Fecha de anulación (si aplica)
   est_registro CHAR(1) NOT NULL DEFAULT 'A',    -- Estado del registro: 'A' activo, 'I' inactivo (para borrado lógico)
   FOREIGN KEY (fky_con) REFERENCES contribuyente(id_con) ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (fky_usu) REFERENCES usuario(id_usu) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -161,11 +162,13 @@ CREATE TABLE IF NOT EXISTS licencia (
   id_lic INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   num_lic VARCHAR(50) NOT NULL UNIQUE,          -- Número de licencia para impresión
   fky_pat INT NOT NULL,
+  fky_fac INT NOT NULL,                         -- Factura asociada al pago de la licencia
   fec_exp_lic DATE NOT NULL,                    -- Fecha de expedición
   vig_lic DATE NOT NULL,                        -- Fecha de vencimiento
   est_lic CHAR(1) NOT NULL DEFAULT 'S',         -- Estado: 'S' solicitada, 'P' pagada, 'V' vencida
   est_registro CHAR(1) NOT NULL DEFAULT 'A',
-  FOREIGN KEY (fky_pat) REFERENCES patente(id_pat) ON DELETE RESTRICT ON UPDATE CASCADE
+  FOREIGN KEY (fky_pat) REFERENCES patente(id_pat) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (fky_fac) REFERENCES factura(id_fac) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS solvencia_comercial (

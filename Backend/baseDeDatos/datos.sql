@@ -1,10 +1,10 @@
 /* Datos de prueba para la tabla rol */
 -- Ajustes de esquema requeridos por los nuevos modulos
 ALTER TABLE factura
-    ADD COLUMN IF NOT EXISTS fec_anulacion DATETIME NULL AFTER est_pago;
+    ADD COLUMN  fec_anulacion DATETIME NULL AFTER est_pago;
 
 ALTER TABLE licencia
-    ADD COLUMN IF NOT EXISTS fky_fac INT NULL AFTER fky_pat;
+    ADD COLUMN  fky_fac INT NULL AFTER fky_pat;
 
 -- Insertar un usuario 'admin' con clave 'Admin123' encriptada
 

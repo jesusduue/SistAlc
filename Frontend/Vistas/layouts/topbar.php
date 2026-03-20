@@ -51,9 +51,8 @@ $paginaActual = basename($_SERVER['PHP_SELF']);?>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="facturacionDropdown">
                         <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/facturacion/gestion_facturas.php"><i class="fas fa-file-invoice-dollar me-2"></i>Facturación</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/reportes/ingresos_diarios.php"><i class="fas fa-chart-line me-2"></i>Ingresos diarios</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/reportes/ingresos_por_rubros.php"><i class="fas fa-chart-pie me-2"></i>Ingresos por rubros</a></li>
-                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/impuestos/gestion_tipo_impuesto.php"><i class="fas fa-percent me-2"></i>Tipos de impuesto</a></li>
+                        <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/facturacion/reporte_ingresos.php"><i class="fas fa-chart-line me-2"></i>Reporte de ingresos</a></li>
+                        <!-- <li><a class="dropdown-item" href="<?= BASE_URL ?>/Vistas/impuestos/gestion_tipo_impuesto.php"><i class="fas fa-percent me-2"></i>Tipos de impuesto</a></li> -->
                     </ul>
                 </li>
             </ul>

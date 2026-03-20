@@ -16,7 +16,7 @@ $mapPatentes = [];
 foreach ($patentes as $pat) { $mapPatentes[$pat['id_pat']] = $pat['num_pat'] . ' - ' . $pat['nom_pat']; }
 ?>
 <link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
+<div class="container-fluid" style="padding-top: 2rem;">
     <h1 class="mb-4">Solvencias comerciales</h1>
 
     <?php if (isset($_SESSION['mensaje'])): ?>

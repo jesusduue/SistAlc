@@ -44,7 +44,7 @@ foreach ($patentes as $pat) {
 <link rel="stylesheet" href="/SistAlc/Frontend/estilos/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
 
-<div class="container-fluid" style="margin-left: 250px; padding-top: 2rem;">
+<div class="container-fluid" style="padding-top: 2rem;">
     <h1 class="mb-4">Gestión de Licencias</h1>
 
     <?php if (isset($_SESSION['mensaje'])): ?>
