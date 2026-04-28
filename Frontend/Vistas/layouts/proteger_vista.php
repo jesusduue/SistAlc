@@ -62,6 +62,8 @@ function obtenerMapaPermisos()
                 'licencias' => ['*'],
                 'solvencias_comerciales' => ['*'],
                 'contribuyentes' => ['*'],
+                'vehiculos' => ['*'],
+                'patentes_vehiculos' => ['*'],
             ],
             'tesorero' => [
                 'contribuyentes' => ['*'],
@@ -74,6 +76,8 @@ function obtenerMapaPermisos()
                 'licencias' => ['*'],
                 'solvencias_comerciales' => ['*'],
                 'facturacion' => ['*'],
+                'vehiculos' => ['*'],
+                'patentes_vehiculos' => ['*'],
             ],
             'secretaria de catastro' => [
                 'contribuyentes' => ['create', 'read'],
@@ -87,15 +91,21 @@ function obtenerMapaPermisos()
                 'patentes' => ['create', 'read'],
                 'licencias' => ['create', 'read'],
                 'solvencias_comerciales' => ['create', 'read'],
+                'vehiculos' => ['create', 'read'],
+                'patentes_vehiculos' => ['create', 'read'],
             ],
             'secretaria de patente' => [
                 'patentes' => ['create', 'read'],
                 'licencias' => ['create', 'read'],
                 'solvencias_comerciales' => ['create', 'read'],
+                'vehiculos' => ['create', 'read'],
+                'patentes_vehiculos' => ['create', 'read'],
             ],
             'calculista' => [
                 'contribuyentes' => ['read'],
                 'patentes' => ['read'],
+                'vehiculos' => ['read'],
+                'patentes_vehiculos' => ['read'],
             ],
         ];
     }
@@ -105,6 +115,10 @@ function obtenerMapaPermisos()
 
 function obtenerAccionesPermitidas($rol, $modulo)
 {
+    if ($modulo === 'perfil') {
+        return ['read', 'update'];
+    }
+
     $permisos = obtenerMapaPermisos();
 
     if (!isset($permisos[$rol])) {

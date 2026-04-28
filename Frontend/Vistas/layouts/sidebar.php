@@ -1,6 +1,16 @@
 <?php
 require_once __DIR__ . '/paths.php';
+require_once __DIR__ . '/proteger_vista.php';
+
 $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+$puedeVerUsuarios = puedeRealizarAccion('usuarios', 'read');
+$puedeVerRoles = puedeRealizarAccion('roles', 'read');
+$puedeVerVehiculos = puedeRealizarAccion('vehiculos', 'read');
+$puedeVerPatentesVehiculos = puedeRealizarAccion('patentes_vehiculos', 'read');
+$usuariosActivo = str_contains($requestUri, '/Vistas/usuarios/gestion_usuarios.php');
+$rolesActivo = str_contains($requestUri, '/Vistas/usuarios/gestion_roles.php');
+$vehiculosActivo = str_contains($requestUri, '/Vistas/vehiculos/gestion_vehiculos.php');
+$patentesVehiculosActivo = str_contains($requestUri, '/Vistas/vehiculos/gestion_patentes_vehiculos.php');
 ?>
 <aside class="alc-sidebar" aria-label="Menu lateral del sistema">
     <div class="alc-sidebar-inner">
@@ -14,7 +24,16 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '';
 
         <nav class="alc-sidebar-nav">
             <a href="<?= BASE_URL ?>/Vistas/dashboard.php" class="<?= str_contains($requestUri, '/Vistas/dashboard.php') ? 'active' : ''; ?>"><i class="fas fa-house"></i><span>Inicio</span></a>
-            <a href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php" class="<?= str_contains($requestUri, '/Vistas/usuarios/') ? 'active' : ''; ?>"><i class="fas fa-users-cog"></i><span>Usuarios</span></a>
+
+            <?php if ($puedeVerUsuarios || $puedeVerRoles): ?>
+                <p class="alc-sidebar-group">Usuarios</p>
+                <?php if ($puedeVerUsuarios): ?>
+                    <a href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php" class="<?= $usuariosActivo ? 'active' : ''; ?>"><i class="fas fa-users-cog"></i><span>Gestion de usuarios</span></a>
+                <?php endif; ?>
+                <?php if ($puedeVerRoles): ?>
+                    <a href="<?= BASE_URL ?>/Vistas/usuarios/gestion_roles.php" class="<?= $rolesActivo ? 'active' : ''; ?>"><i class="fas fa-user-tag"></i><span>Gestion de roles</span></a>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <p class="alc-sidebar-group">Catastro</p>
             <a href="<?= BASE_URL ?>/Vistas/contribuyentes/gestion_contribuyentes.php" class="<?= str_contains($requestUri, '/Vistas/contribuyentes/') ? 'active' : ''; ?>"><i class="fas fa-id-card"></i><span>Contribuyentes</span></a>
@@ -28,6 +47,16 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '';
             <a href="<?= BASE_URL ?>/Vistas/patentes/gestionPatentes.php" class="<?= str_contains($requestUri, '/Vistas/patentes/') ? 'active' : ''; ?>"><i class="fas fa-certificate"></i><span>Patentes</span></a>
             <a href="<?= BASE_URL ?>/Vistas/licencias/gestionLicencias.php" class="<?= str_contains($requestUri, '/Vistas/licencias/') ? 'active' : ''; ?>"><i class="fas fa-id-badge"></i><span>Licencias</span></a>
             <a href="<?= BASE_URL ?>/Vistas/comercio/gestion_solvencias_comerciales.php" class="<?= str_contains($requestUri, '/Vistas/comercio/') ? 'active' : ''; ?>"><i class="fas fa-store"></i><span>Solvencias comerciales</span></a>
+
+            <?php if ($puedeVerVehiculos || $puedeVerPatentesVehiculos): ?>
+                <p class="alc-sidebar-group">Vehiculos</p>
+                <?php if ($puedeVerVehiculos): ?>
+                    <a href="<?= BASE_URL ?>/Vistas/vehiculos/gestion_vehiculos.php" class="<?= $vehiculosActivo ? 'active' : ''; ?>"><i class="fas fa-car-side"></i><span>Gestion de vehiculos</span></a>
+                <?php endif; ?>
+                <?php if ($puedeVerPatentesVehiculos): ?>
+                    <a href="<?= BASE_URL ?>/Vistas/vehiculos/gestion_patentes_vehiculos.php" class="<?= $patentesVehiculosActivo ? 'active' : ''; ?>"><i class="fas fa-file-signature"></i><span>Patentes vehiculares</span></a>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <p class="alc-sidebar-group">Facturacion</p>
             <a href="<?= BASE_URL ?>/Vistas/facturacion/gestion_facturas.php" class="<?= str_contains($requestUri, '/gestion_facturas.php') ? 'active' : ''; ?>"><i class="fas fa-file-invoice"></i><span>Facturas</span></a>

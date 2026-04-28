@@ -208,6 +208,30 @@
   transform: translateY(-1px);
 }
 
+.alc-btn-profile {
+  background: rgba(127, 29, 29, 0.08);
+  border: 1px solid rgba(127, 29, 29, 0.14);
+  color: var(--color-primary);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 0.84rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.alc-btn-profile:hover,
+.alc-btn-profile:focus-visible,
+.alc-btn-profile.active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
 .alc-page {
   padding: 1.65rem 1rem 2rem;
   animation: alcFadeUp 0.38s ease;

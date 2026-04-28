@@ -1,35 +1,23 @@
 <?php
 require_once 'Utilidad.php';
 require_once 'auditoria.php';
-/**
- * Clase Usuario
- * Modela la tabla 'usuario' de la base de datos y gestiona sus operaciones.
- */
+
 class Usuario extends Utilidad
 {
-    // Propiedades que coinciden con las columnas de la tabla 'usuario'
     public $id_usu;
     public $nom_usu;
     public $cla_usu;
     public $fky_rol;
     public $est_registro;
+    public $ultimo_error = '';
 
-    /**
-     * Valida las credenciales de un usuario contra la base de datos.
-     * Utiliza sentencias preparadas para prevenir inyección SQL.
-     * @param string $nombreUsuario El nombre de usuario.
-     * @param string $clave La contraseña sin encriptar.
-     * @return bool True si el login es exitoso, False en caso contrario.
-     */
     public function login($nombreUsuario, $clave)
     {
-        // Consulta SQL con marcadores de posición (?) para seguridad
-        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.cla_usu, u.fky_rol, u.est_registro, r.nom_rol 
+        $this->que_bd = "SELECT u.id_usu, u.nom_usu, u.cla_usu, u.fky_rol, u.est_registro, r.nom_rol
                          FROM usuario u
                          INNER JOIN rol r ON u.fky_rol = r.id_rol
                          WHERE u.nom_usu = ? AND u.est_registro = 'A'";
 
-        // Preparar la sentencia
         $stmt = $this->con_bd->prepare($this->que_bd);
 
         if (!$stmt) {
@@ -37,89 +25,63 @@ class Usuario extends Utilidad
             return false;
         }
 
-        // Vincular el parámetro (nombre de usuario)
         $stmt->bind_param("s", $nombreUsuario);
-
-        // Ejecutar la consulta
         $stmt->execute();
-
-        // Obtener el resultado
         $resultado = $stmt->get_result();
 
-        // Verificar si se encontró un usuario
         if ($resultado->num_rows == 1) {
             $datos_usuario = $resultado->fetch_assoc();
 
-            // Verificar la contraseña usando password_verify()
             if (password_verify($clave, $datos_usuario['cla_usu'])) {
-                // La contraseña es correcta. Crear la sesión.
                 $_SESSION['id_usu'] = $datos_usuario['id_usu'];
                 $_SESSION['nom_usu'] = $datos_usuario['nom_usu'];
                 $_SESSION['fky_rol'] = $datos_usuario['fky_rol'];
-                $_SESSION['nom_rol'] = $datos_usuario['nom_rol']; // Guardamos también el nombre del rol
+                $_SESSION['nom_rol'] = $datos_usuario['nom_rol'];
 
                 $stmt->close();
-                return true; // Login exitoso
+                return true;
             }
         }
 
-        // Si el usuario no existe, la clave es incorrecta o está inactivo
         $stmt->close();
         return false;
     }
 
-    /**
-     * Maneja las peticiones HTTP relacionadas con los usuarios.
-     * Maneja la lógica del inicio de sesión.
-     */
     public function iniciarSesion()
     {
-        // Validar que los campos no estén vacíos
         if (!empty($_POST['nom_usu']) && !empty($_POST['cla_usu'])) {
-
             $nombreUsuario = $_POST['nom_usu'];
             $clave = $_POST['cla_usu'];
-
-            // Intentar iniciar sesión
-            // Llamar al método login de la clase Usuario
             $login_exitoso = $this->login($nombreUsuario, $clave);
-            // Si el login es exitoso, redirigir al dashboard
 
             if ($login_exitoso) {
-                // Registrar la actividad de login
                 $auditoria = new Auditoria();
                 $auditoria->registrarActividad(
                     $_SESSION['id_usu'] ?? 0,
                     $_SESSION['nom_usu'] ?? 'desconocido',
                     'Sistema',
                     'Login',
-                    'Inicio de sesión exitoso'
+                    'Inicio de sesion exitoso'
                 );
-                // Redirigir al panel principal si el login es correcto
                 header('Location: ../../Frontend/Vistas/dashboard.php');
                 exit();
-            } else {
-                // Redirigir al index con un mensaje de error si falla
-                $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Usuario o contraseña incorrectos, o el usuario está inactivo.'];
-                header('Location: ../../index.php');
-                exit();
             }
-        } else {
-            // Redirigir si los datos están incompletos
-            $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Usuario o contraseña incorrectos, o el usuario está inactivo.'];
+
+            $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Usuario o contrasena incorrectos, o el usuario esta inactivo.'];
             header('Location: ../../index.php');
             exit();
         }
+
+        $_SESSION['mensaje'] = ['tipo' => 'danger', 'texto' => 'Usuario o contrasena incorrectos, o el usuario esta inactivo.'];
+        header('Location: ../../index.php');
+        exit();
     }
-    /* cerrar sesion */
+
     public function cerrarSesion()
     {
         session_start();
-        // Elimina todas las variables de sesión.
         $_SESSION = array();
 
-        // Si se desea eliminar completamente la sesión, también se debe borrar la cookie de sesión.
-        // Nota: Esto destruirá la sesión, no solo los datos almacenados en ella.
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(
@@ -133,12 +95,10 @@ class Usuario extends Utilidad
             );
         }
 
-        // Finalmente, destruye la sesión.
         session_destroy();
 
-        // Redirige a la página de inicio de sesión con un mensaje
-        session_start(); // Inicia una nueva sesión solo para pasar un mensaje
-        $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Ha cerrado sesión exitosamente.'];
+        session_start();
+        $_SESSION['mensaje'] = ['tipo' => 'info', 'texto' => 'Ha cerrado sesion exitosamente.'];
         header('Location: ../../index.php');
         exit;
     }
@@ -153,6 +113,24 @@ class Usuario extends Utilidad
 
         $resultado = $this->con_bd->query($this->que_bd);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    public function consultar_perfil(int $id)
+    {
+        $sql = "SELECT u.id_usu,
+                       u.nom_usu,
+                       u.fky_rol,
+                       u.est_registro,
+                       r.nom_rol,
+                       CASE u.est_registro WHEN 'A' THEN 'Activo' ELSE 'Inactivo' END AS estado_descripcion
+                  FROM usuario u
+                 INNER JOIN rol r ON u.fky_rol = r.id_rol
+                 WHERE u.id_usu = ?";
+        $stmt = $this->con_bd->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        return $resultado ? $resultado->fetch_assoc() : null;
     }
 
     public function consultar_por_id($id)
@@ -188,6 +166,65 @@ class Usuario extends Utilidad
         return $stmt->execute();
     }
 
+    public function cambiar_clave($id, $claveActual, $claveNueva)
+    {
+        $this->ultimo_error = '';
+
+        $stmt = $this->con_bd->prepare("SELECT cla_usu, est_registro FROM usuario WHERE id_usu = ?");
+        if (!$stmt) {
+            $this->ultimo_error = 'error_consulta';
+            return false;
+        }
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        $usuario = $resultado ? $resultado->fetch_assoc() : null;
+        $stmt->close();
+
+        if (!$usuario) {
+            $this->ultimo_error = 'usuario_no_encontrado';
+            return false;
+        }
+
+        if (($usuario['est_registro'] ?? 'I') !== 'A') {
+            $this->ultimo_error = 'usuario_inactivo';
+            return false;
+        }
+
+        if (!password_verify($claveActual, $usuario['cla_usu'])) {
+            $this->ultimo_error = 'clave_actual_incorrecta';
+            return false;
+        }
+
+        if (strlen($claveNueva) < 8) {
+            $this->ultimo_error = 'clave_nueva_corta';
+            return false;
+        }
+
+        if (password_verify($claveNueva, $usuario['cla_usu'])) {
+            $this->ultimo_error = 'clave_igual_actual';
+            return false;
+        }
+
+        $nuevaClaveHash = password_hash($claveNueva, PASSWORD_DEFAULT);
+        $stmt = $this->con_bd->prepare("UPDATE usuario SET cla_usu = ? WHERE id_usu = ?");
+        if (!$stmt) {
+            $this->ultimo_error = 'error_actualizacion';
+            return false;
+        }
+
+        $stmt->bind_param("si", $nuevaClaveHash, $id);
+        $ok = $stmt->execute();
+        $stmt->close();
+
+        if (!$ok) {
+            $this->ultimo_error = 'error_actualizacion';
+        }
+
+        return $ok;
+    }
+
     public function cambiar_estado($id, $nuevo_estado)
     {
         $stmt = $this->con_bd->prepare("UPDATE usuario SET est_registro = ? WHERE id_usu = ?");
@@ -195,12 +232,11 @@ class Usuario extends Utilidad
         return $stmt->execute();
     }
 
-    //funcion para eliminar un usuario
     public function eliminar($id)
     {
         $stmt = $this->con_bd->prepare("DELETE FROM usuario WHERE id_usu = ?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-}//fin archivo php
-
+}
+?>

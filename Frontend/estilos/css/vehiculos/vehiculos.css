@@ -1,0 +1,70 @@
+.vehiculos-page .alc-page-header,
+.patentes-vehiculos-page .alc-page-header {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.16), rgba(255, 255, 255, 0.88)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.74));
+}
+
+.vehiculos-page #buscadorVehiculo,
+.patentes-vehiculos-page #buscadorPatenteVehiculo {
+  border-left: 4px solid #7f1d1d;
+}
+
+.vehiculos-page .btn-warning,
+.patentes-vehiculos-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.vehiculos-page .modal-dialog {
+  max-width: 980px;
+}
+
+.vehiculos-page #buscarContribuyenteVehiculo,
+.patentes-vehiculos-page #buscarVehiculoPatente {
+  border-left: 3px solid rgba(127, 29, 29, 0.35);
+}
+
+.vehiculos-page #tablaVehiculosFiscales td:last-child {
+  min-width: 220px;
+}
+
+.patentes-vehiculos-page #tablaPatentesVehiculos td:last-child {
+  min-width: 290px;
+}
+
+.vehiculo-resumen {
+  border-left: 4px solid rgba(127, 29, 29, 0.4);
+  background: rgba(127, 29, 29, 0.06);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  color: #57534e;
+  font-size: 0.92rem;
+}
+
+.vehiculos-page .dropdown-menu,
+.patentes-vehiculos-page .dropdown-menu {
+  border-radius: 10px;
+}
+
+.vehiculos-page .dropdown-item,
+.patentes-vehiculos-page .dropdown-item {
+  font-weight: 600;
+}
+
+.vehiculos-page .dropdown-item:hover,
+.patentes-vehiculos-page .dropdown-item:hover {
+  background-color: rgba(127, 29, 29, 0.09);
+  color: #7f1d1d;
+}
+
+@media (max-width: 1200px) {
+  .vehiculos-page #tablaVehiculosFiscales {
+    min-width: 1280px;
+  }
+
+  .patentes-vehiculos-page #tablaPatentesVehiculos {
+    min-width: 1380px;
+  }
+}

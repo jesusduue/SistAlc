@@ -1,21 +1,34 @@
 <?php
 require_once __DIR__ . '/paths.php';
+require_once __DIR__ . '/proteger_vista.php';
 
 $requestUri = $_SERVER['REQUEST_URI'] ?? '';
 
 $isDashboard = str_contains($requestUri, '/Vistas/dashboard.php');
-$isUsuarios = str_contains($requestUri, '/Vistas/usuarios/');
+$isPerfilUsuario = str_contains($requestUri, '/Vistas/usuarios/perfil.php');
+$isGestionUsuarios = str_contains($requestUri, '/Vistas/usuarios/gestion_usuarios.php');
+$isGestionRoles = str_contains($requestUri, '/Vistas/usuarios/gestion_roles.php');
+$isUsuarios = $isGestionUsuarios || $isGestionRoles;
 $isContribuyentes = str_contains($requestUri, '/Vistas/contribuyentes/');
 $isCatastro = str_contains($requestUri, '/Vistas/catastro/');
 $isPatentes = str_contains($requestUri, '/Vistas/patentes/');
 $isLicencias = str_contains($requestUri, '/Vistas/licencias/');
 $isComercio = str_contains($requestUri, '/Vistas/comercio/');
+$isVehiculos = str_contains($requestUri, '/Vistas/vehiculos/');
+$isGestionVehiculos = str_contains($requestUri, '/Vistas/vehiculos/gestion_vehiculos.php');
+$isGestionPatentesVehiculos = str_contains($requestUri, '/Vistas/vehiculos/gestion_patentes_vehiculos.php');
 $isFacturacion = str_contains($requestUri, '/Vistas/facturacion/');
 $isImpuestos = str_contains($requestUri, '/Vistas/impuestos/');
 
 $catastroActivo = $isContribuyentes || $isCatastro;
 $patentesActivo = $isPatentes || $isLicencias || $isComercio;
+$vehiculosActivo = $isVehiculos;
 $facturacionActivo = $isFacturacion || $isImpuestos;
+$puedeVerUsuarios = puedeRealizarAccion('usuarios', 'read');
+$puedeVerRoles = puedeRealizarAccion('roles', 'read');
+$puedeVerPerfil = puedeRealizarAccion('perfil', 'read');
+$puedeVerVehiculos = puedeRealizarAccion('vehiculos', 'read');
+$puedeVerPatentesVehiculos = puedeRealizarAccion('patentes_vehiculos', 'read');
 ?>
 <nav class="navbar navbar-expand-xl alc-topbar sticky-top">
     <div class="container-fluid px-3 px-lg-4">
@@ -36,9 +49,22 @@ $facturacionActivo = $isFacturacion || $isImpuestos;
                 <li class="nav-item">
                     <a class="nav-link <?= $isDashboard ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/dashboard.php"><i class="fas fa-house"></i><span>Inicio</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= $isUsuarios ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php"><i class="fas fa-users-cog"></i><span>Usuarios</span></a>
-                </li>
+
+                <?php if ($puedeVerUsuarios || $puedeVerRoles): ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle <?= $isUsuarios ? 'active' : ''; ?>" href="#" id="usuariosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-users-cog"></i><span>Usuarios</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="usuariosDropdown">
+                            <?php if ($puedeVerUsuarios): ?>
+                                <li><a class="dropdown-item <?= $isGestionUsuarios ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/usuarios/gestion_usuarios.php"><i class="fas fa-users"></i>Gestion de usuarios</a></li>
+                            <?php endif; ?>
+                            <?php if ($puedeVerRoles): ?>
+                                <li><a class="dropdown-item <?= $isGestionRoles ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/usuarios/gestion_roles.php"><i class="fas fa-user-tag"></i>Gestion de roles</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
+                <?php endif; ?>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle <?= $catastroActivo ? 'active' : ''; ?>" href="#" id="catastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,6 +91,22 @@ $facturacionActivo = $isFacturacion || $isImpuestos;
                     </ul>
                 </li>
 
+                <?php if ($puedeVerVehiculos || $puedeVerPatentesVehiculos): ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle <?= $vehiculosActivo ? 'active' : ''; ?>" href="#" id="vehiculosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-car-side"></i><span>Vehiculos</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="vehiculosDropdown">
+                            <?php if ($puedeVerVehiculos): ?>
+                                <li><a class="dropdown-item <?= $isGestionVehiculos ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/vehiculos/gestion_vehiculos.php"><i class="fas fa-car-side"></i>Gestion de vehiculos</a></li>
+                            <?php endif; ?>
+                            <?php if ($puedeVerPatentesVehiculos): ?>
+                                <li><a class="dropdown-item <?= $isGestionPatentesVehiculos ? 'active' : ''; ?>" href="<?= BASE_URL ?>/Vistas/vehiculos/gestion_patentes_vehiculos.php"><i class="fas fa-file-signature"></i>Patentes vehiculares</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle <?= $facturacionActivo ? 'active' : ''; ?>" href="#" id="facturacionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-file-invoice-dollar"></i><span>Facturacion</span>
@@ -85,6 +127,12 @@ $facturacionActivo = $isFacturacion || $isImpuestos;
                         <small><?= htmlspecialchars($_SESSION['nom_rol'] ?? ''); ?></small>
                     </span>
                 </div>
+                <?php if ($puedeVerPerfil): ?>
+                    <a href="<?= BASE_URL ?>/Vistas/usuarios/perfil.php" class="btn alc-btn-profile <?= $isPerfilUsuario ? 'active' : ''; ?>">
+                        <i class="fas fa-user-pen"></i>
+                        <span>Perfil</span>
+                    </a>
+                <?php endif; ?>
                 <form action="<?= BACKEND_URL ?>/controlador/UsuarioController.php" method="POST" class="m-0">
                     <input type="hidden" name="accion" value="logout">
                     <button class="btn alc-btn-logout" type="submit">

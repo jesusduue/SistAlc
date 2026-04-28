@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let etiqueta = '';
                 switch (tipoActual) {
                     case 'cedula':
-                        etiqueta = `${item.num_ced} - ${item.sol_ced}`;
+                        etiqueta = `${item.num_ced} - ${item.nom_con}`;
                         break;
                     case 'solv_mun':
                         etiqueta = `${item.num_sol} - ${item.sol_sol}`;

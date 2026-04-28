@@ -25,7 +25,12 @@ $actividadReciente = $dash->actividadesRecientes(30);
             <h1 class="alc-page-title">Gestion de usuarios</h1>
             <p class="alc-page-subtitle">Administra cuentas, roles y estado de acceso del personal institucional.</p>
         </div>
-        <div class="alc-page-tools">
+        <div class="alc-page-tools d-flex flex-wrap gap-2">
+            <?php if (puedeRealizarAccion('roles', 'read')): ?>
+                <a href="<?= BASE_URL ?>/Vistas/usuarios/gestion_roles.php" class="btn btn-outline-secondary">
+                    <i class="fas fa-user-tag me-2"></i>Gestionar roles
+                </a>
+            <?php endif; ?>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#usuarioModal">
                 <i class="fas fa-user-plus me-2"></i>Registrar nuevo usuario
             </button>

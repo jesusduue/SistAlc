@@ -205,10 +205,48 @@ CREATE TABLE IF NOT EXISTS detalle_impuesto (
   FOREIGN KEY (fky_sol_com) REFERENCES solvencia_comercial(id_sol_com) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+/* 
+================================================================================
+  SECCION 5: PATENTE DE VEHICULOS FISCALES
+  Importante: La patente de vehiculos fiscales es una patente municipal que se paga anualmente
+  agregar esta tabla antes de la tabla de impuestos para que se relacione con la tabla de contribuyentes
+  y evitar errores de clave foránea
+================================================================================
+*/
+
+CREATE TABLE vehiculo_fiscal (
+  id_veh_fis INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  fky_con INT NOT NULL comment 'clave foránea de la tabla contribuyente',
+  pla_veh VARCHAR(20) NOT NULL comment 'placa del vehiculo',
+  mar_veh VARCHAR(50) NOT NULL comment 'marca del vehiculo',
+  mod_veh VARCHAR(50) NOT NULL comment 'modelo del vehiculo',
+  año_veh INT NOT NULL comment 'año del vehiculo',
+  col_veh VARCHAR(50)  NULL comment 'color del vehiculo',
+  tip_veh VARCHAR(50) NOT NULL comment 'tipo del vehiculo (automovil particular, motocicleta, transporte publico, camioneta, gandola, chuto etc)',
+  cap_car_veh VARCHAR(10) NULL comment 'capacidad de carga del vehiculo vehiculo',
+  num_ser_veh VARCHAR(50) NULL comment 'numero serial del vehiculo',
+  est_veh CHAR(1) NOT NULL DEFAULT 'p' comment 'estado del vehiculo: p: propio, t: traspaso, e: en venta',
+  est_registro CHAR(1) NOT NULL DEFAULT 'a' comment 'estado del registro: A: Activo, I: Inactivo',
+  FOREIGN KEY (fky_con) REFERENCES contribuyente(id_con) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE patente_vehiculo_fiscal (
+    id_pat_vf INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    num_pat_vf VARCHAR(20) NOT NULL UNIQUE comment 'numero de factura de la patente de vehiculo fiscal',
+    fky_veh_fis INT NOT NULL comment 'clave foránea de la tabla vehiculo_fiscal',
+    fec_emi_pat DATE NOT NULL comment 'fecha de emisión',
+    fec_ven_pat DATE NOT NULL comment 'fecha de vencimiento',
+    mon_pat DECIMAL(16,2) NOT NULL comment 'monto de la patente',
+    est_pat CHAR(1) NOT NULL DEFAULT 'e' comment 'estado de la patente: e: emitida, v: vencida, a: anulada',
+    est_registro CHAR(1) NOT NULL DEFAULT 'a' comment 'estado del registro: a: activo, i: inactivo',
+    fky_usu INT NOT NULL comment 'clave foránea de la tabla usuario',
+    FOREIGN KEY (fky_veh_fis) REFERENCES vehiculo_fiscal(id_veh_fis) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (fky_usu) REFERENCES usuario(id_usu) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 /*
 ================================================================================
-    SECCIÓN 5: AUDITORÍA Y REGISTRO DE ACTIVIDADES
+    SECCIÓN 6: AUDITORÍA Y REGISTRO DE ACTIVIDADES
 ================================================================================
 */
 
@@ -231,7 +269,7 @@ CREATE TABLE IF NOT EXISTS log_actividad (
 
 /*
 ================================================================================
-    SECCIÓN 6: AUTOMATIZACIÓN DE ESTADOS DE VENCIMIENTO
+    SECCIÓN 7: AUTOMATIZACIÓN DE ESTADOS DE VENCIMIENTO
     IMPORTANTE: El Event Scheduler de MySQL debe estar activado.
     Ejecutar: SET GLOBAL event_scheduler = ON;
 ================================================================================

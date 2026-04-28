@@ -1,0 +1,71 @@
+.roles-page .roles-hero {
+  background:
+    linear-gradient(130deg, rgba(127, 29, 29, 0.16), rgba(255, 255, 255, 0.9)),
+    linear-gradient(90deg, rgba(245, 245, 244, 0.9), rgba(231, 229, 228, 0.75));
+}
+
+.roles-page .card {
+  margin-bottom: 1rem;
+}
+
+.roles-page .card-header {
+  font-size: 0.92rem;
+}
+
+.roles-page .role-note {
+  border: 0;
+  border-left: 4px solid #7f1d1d;
+  background: linear-gradient(90deg, rgba(127, 29, 29, 0.08), rgba(255, 255, 255, 0.95));
+  color: #4b5563;
+}
+
+.roles-page .role-note i {
+  color: #7f1d1d;
+}
+
+.roles-page td,
+.roles-page th {
+  vertical-align: middle;
+}
+
+.roles-page .table td:last-child {
+  min-width: 160px;
+}
+
+.roles-page .btn-warning {
+  color: #fff;
+  background: linear-gradient(130deg, #b45309, #d97706);
+  border-color: #b45309;
+}
+
+.roles-page .role-type {
+  border-radius: 999px;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.roles-page .role-type-base {
+  background: rgba(127, 29, 29, 0.14);
+  color: #7f1d1d;
+}
+
+.roles-page .role-type-custom {
+  background: rgba(15, 118, 110, 0.12);
+  color: #0f766e;
+}
+
+.roles-page .role-count {
+  font-weight: 700;
+}
+
+.roles-page .form-text {
+  min-height: 2.5rem;
+}
+
+@media (max-width: 992px) {
+  .roles-page .table {
+    min-width: 920px;
+  }
+}
