@@ -1,0 +1,24 @@
+/* Estilos de marca y detalles de interacción para Quierete Bonito. */
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { min-width: 320px; }
+button, input, select, textarea { font: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid rgba(204,73,143,.28); outline-offset: 2px; }
+.bg-grid { background-image: radial-gradient(rgba(204,73,143,.11) 1px, transparent 1px); background-size: 18px 18px; }
+.brand-gradient { background: linear-gradient(135deg, #CC498F, #b73779); }
+.glass { background: rgba(255,255,255,.78); backdrop-filter: blur(16px); }
+.sidebar-link.active { color: #CC498F; background: #FBEAF3; font-weight: 600; }
+.nav-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
+.nav-scroll::-webkit-scrollbar-thumb { background: #EBC1D5; border-radius: 999px; }
+.chart-bar { transition: height .35s ease, opacity .2s ease; }
+.chart-bar:hover { opacity: .78; }
+.modal-backdrop { animation: fadeIn .18s ease-out; }
+.modal-panel { animation: slideUp .2s ease-out; }
+.toast-in { animation: toastIn .25s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes toastIn { from { transform: translateY(-8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@media (max-width: 767px) {
+  .mobile-safe-bottom { padding-bottom: 5.8rem; }
+  .mobile-table { min-width: 720px; }
+}

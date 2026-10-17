@@ -1,0 +1,18 @@
+{
+  "routes": [
+    { "path": "/", "title": "Dashboard" },
+    { "path": "/login", "title": "Iniciar sesión" },
+    { "path": "/clientes", "title": "Clientes" },
+    { "path": "/citas", "title": "Citas" },
+    { "path": "/ventas", "title": "Ventas" },
+    { "path": "/ventas/nueva", "title": "Nueva venta" },
+    { "path": "/ventas/:id", "title": "Detalle de venta" },
+    { "path": "/servicios", "title": "Servicios" },
+    { "path": "/productos", "title": "Productos" },
+    { "path": "/categorias", "title": "Categorías" },
+    { "path": "/gastos", "title": "Gastos" },
+    { "path": "/categorias-gastos", "title": "Categorías de gastos" },
+    { "path": "/metodos-pago", "title": "Métodos de pago" },
+    { "path": "/reportes", "title": "Reportes" }
+  ]
+}
