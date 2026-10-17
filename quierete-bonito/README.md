@@ -30,6 +30,10 @@ La moneda de reportes es COP. Las ventas y gastos conservan el monto original, m
 - `ROUND(monto_original * tasa_a_base, 2) === monto_en_base`
 - `ROUND(cantidad * precio_unitario, 2) === subtotal`
 
+### Regla de conversión de ventas
+
+Los precios de servicios y productos están definidos siempre en COP. `tasa_a_base` significa cuántos COP equivalen a una unidad de la moneda recibida: por ejemplo, `1 USD = 3.200 COP` o `1 VES = 3,1 COP`. Por eso, al seleccionar USD o VES, el total a pagar se calcula como `total_en_base / tasa_a_base`; no se altera el precio del catálogo. La venta guarda `total_original` en la moneda recibida y `total_en_base` en COP, que es el valor usado para ganancias y reportes. Para convertir un monto recibido nuevamente a COP se aplica `monto_original * tasa_a_base`.
+
 ## Migración futura a Supabase/PostgreSQL
 
 1. Mantener las mismas funciones públicas del wrapper (`getAll`, `getById`, `insert`, `update`, `delete`).

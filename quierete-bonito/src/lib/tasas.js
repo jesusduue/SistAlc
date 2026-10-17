@@ -12,6 +12,20 @@ export function calcularConversion(monto, tasa) {
   return redondear(Number(monto || 0) * Number(tasa || 0));
 }
 
+// La tasa se guarda como moneda de pago → COP: 1 USD = 3.200 COP.
+// Por eso, cuando el precio base está en COP, el importe a cobrar se divide.
+export function convertirBaseAMoneda(montoEnBase, tasa, moneda = 'COP') {
+  if (moneda === 'COP') return redondear(montoEnBase);
+  // Se guardan hasta 8 decimales para que, al volver a multiplicar por la
+  // tasa, la restricción SQL redondeada siga cerrando en el total COP.
+  const convertido = Number(montoEnBase || 0) / Number(tasa || 1);
+  return Math.round((convertido + Number.EPSILON) * 100000000) / 100000000;
+}
+
+export function convertirMonedaABase(monto, tasa) {
+  return calcularConversion(monto, tasa);
+}
+
 export async function sugerirUltimaTasa(moneda) {
   return ultimaTasaUsada(moneda);
 }
